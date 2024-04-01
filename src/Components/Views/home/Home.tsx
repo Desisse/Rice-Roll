@@ -34,7 +34,7 @@ export const HomeScreen = () => {
                     />
                     <TextInput
                         style={styles.textInput}
-                        placeholder='Password'
+                        placeholder='Contraseña'
                         keyboardType='default'
                         secureTextEntry={true} />
                 </View>
