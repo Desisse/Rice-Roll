@@ -2,10 +2,12 @@ import React from "react";
 import { Image, Text, TextInput, View, StyleSheet, TouchableOpacity } from "react-native";
 import { RoundedButton } from "../../Components/RoundedButton";
 import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp} from "@react-navigation/stack"
+import { RootStackParamList } from "../../../../App";
 
 export const HomeScreen = () => {
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     return (
         <View style={styles.container}>
             <Image

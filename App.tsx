@@ -4,12 +4,12 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { HomeScreen } from './src/Components/Views/home/Home';
 import { RegisterScreen } from './src/Components/Views/register/Register';
 
-// export type RootStackParamList = {
-//   HomeScreen: undefined,
-//   RegisterScreen: undefined
-// }
+export type RootStackParamList = {
+    HomeScreen: undefined,
+    RegisterScreen: undefined
+ }
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App = () => {
   return (
