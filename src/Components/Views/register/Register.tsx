@@ -82,7 +82,7 @@ export const RegisterScreen = () => {
                 </View>
 
                 <View style={{ marginTop: 30 }}>
-                    <RoundedButton text='CONFIRMAR' />
+                    <RoundedButton text='CONFIRMAR' onPress = { () => {}} />
                 </View>
 
             </View>

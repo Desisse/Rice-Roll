@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Image, Text, TextInput, View, StyleSheet, TouchableOpacity } from "react-native";
 import { RoundedButton } from "../../Components/RoundedButton";
 import { useNavigation } from "@react-navigation/native";
@@ -7,6 +7,8 @@ import { RootStackParamList } from "../../../../App";
 
 export const HomeScreen = () => {
 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
     return (
         <View style={styles.container}>
@@ -24,7 +26,10 @@ export const HomeScreen = () => {
                     <TextInput
                         style={styles.textInput}
                         placeholder='Email'
-                        keyboardType='email-address' />
+                        keyboardType='email-address'
+                        value = { email } 
+                        onChangeText={ text => setEmail(text) }
+                        />
                 </View>
 
                 <View style={styles.formInput}>
@@ -36,11 +41,17 @@ export const HomeScreen = () => {
                         style={styles.textInput}
                         placeholder='Contraseña'
                         keyboardType='default'
-                        secureTextEntry={true} />
+                        secureTextEntry={true} 
+                        value = { password } 
+                        onChangeText={ text => setPassword(text) }
+                        />
                 </View>
 
                 <View style={{ marginTop: 30 }}>
-                    <RoundedButton text='INGRESAR' />
+                    <RoundedButton text='INGRESAR' onPress = { () => {
+                        console.log('Email: ',  email);
+                        console.log('Password: ',  password);
+                    }} />
                 </View>
 
                 <View style={styles.formRegister}>
