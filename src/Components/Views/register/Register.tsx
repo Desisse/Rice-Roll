@@ -1,146 +1,106 @@
 import React from "react";
-import { Image, Text, TextInput, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Image,
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { RoundedButton } from "../../Components/RoundedButton";
-
+import useViewModel from "./ViewModel";
+import { CustomTextInput } from "../../Components/CustomTextInput";
+import styles from "./Styles";
 
 export const RegisterScreen = () => {
-    return (
-        <View style={styles.container}>
-            <Image
-                source={require('../../../../assets/sushi.jpg')}
-                style={styles.imageBackground}
-            />
-            <View style={styles.form}>
-                <Text style={styles.formText}>REGISTRARSE</Text>
+  const {
+    name,
+    lastname,
+    email,
+    phone,
+    password,
+    confirmPassword,
+    onChange,
+    register,
+  } = useViewModel();
 
-                <View style={styles.formInput}>
-                    <Image
-                        style={styles.formIcon}
-                        source={require('../../../../assets/user.png')}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder='Nombre'
-                        keyboardType='default' />
-                </View>
+  return (
+    <View style={styles.container}>
+      <Image
+        source={require("../../../../assets/sushi.jpg")}
+        style={styles.imageBackground}
+      />
+      <View style={styles.userContainer}>
+        <Image
+          source={require("../../../../assets/UserImage.png")}
+          style={styles.userImage}
+        />
+        <Text style={styles.userText}> Selecciona una imagen </Text>
+      </View>
 
-                <View style={styles.formInput}>
-                    <Image
-                        style={styles.formIcon}
-                        source={require('../../../../assets/user.png')}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder='Apellido'
-                        keyboardType='default' />
-                </View>
+      <View style={styles.form}>
+        <Text style={styles.formText}>REGISTRARSE</Text>
 
-                <View style={styles.formInput}>
-                    <Image
-                        style={styles.formIcon}
-                        source={require('../../../../assets/email.png')}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder='Email'
-                        keyboardType='email-address' />
-                </View>
+        <CustomTextInput
+          image={require("../../../../assets/user.png")}
+          placeholder="Nombre"
+          value={name}
+          keyboardType="default"
+          property="name"
+          onChangeText={onChange}
+        />
 
-                <View style={styles.formInput}>
-                    <Image
-                        style={styles.formIcon}
-                        source={require('../../../../assets/phone.png')}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder='Telefono'
-                        keyboardType='numeric' />
-                </View>
+        <CustomTextInput
+          image={require("../../../../assets/user.png")}
+          placeholder="Apellido"
+          value={lastname}
+          keyboardType="default"
+          property="lastname"
+          onChangeText={onChange}
+        />
 
-                <View style={styles.formInput}>
-                    <Image
-                        style={styles.formIcon}
-                        source={require('../../../../assets/password.png')}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder='Contraseña'
-                        keyboardType='default'
-                        secureTextEntry={true} />
-                </View>
+        <CustomTextInput
+          image={require("../../../../assets/email.png")}
+          placeholder="Email"
+          value={email}
+          keyboardType="email-address"
+          property="email"
+          onChangeText={onChange}
+        />
 
-                <View style={styles.formInput}>
-                    <Image
-                        style={styles.formIcon}
-                        source={require('../../../../assets/password.png')}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        placeholder='Confirmar Contraseña'
-                        keyboardType='default'
-                        secureTextEntry={true} />
-                </View>
+        <CustomTextInput
+          image={require("../../../../assets/phone.png")}
+          placeholder="Telefono"
+          value={phone}
+          keyboardType="numeric"
+          property="phone"
+          onChangeText={onChange}
+        />
 
-                <View style={{ marginTop: 30 }}>
-                    <RoundedButton text='CONFIRMAR' onPress = { () => {}} />
-                </View>
+        <CustomTextInput
+          image={require("../../../../assets/password.png")}
+          placeholder="Contraseña"
+          value={password}
+          keyboardType="default"
+          property="password"
+          onChangeText={onChange}
+          secureTextEntry={true}
+        />
 
-            </View>
+        <CustomTextInput
+          image={require("../../../../assets/password.png")}
+          placeholder="Confirmar Contraseña"
+          value={confirmPassword}
+          keyboardType="default"
+          property="confirmPassword"
+          onChangeText={onChange}
+          secureTextEntry={true}
+        />
+
+        <View style={{ marginTop: 30 }}>
+          <RoundedButton text="CONFIRMAR" onPress={() => register()} />
         </View>
-    );
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'black',
-    },
-    imageBackground: {
-        width: '100%',
-        height: '100%',
-        opacity: 0.7,
-        bottom: '20%'
-    },
-    form: {
-        width: '100%',
-        height: '70%',
-        backgroundColor: 'white',
-        position: 'absolute',
-        bottom: 0,
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
-        padding: 30
-    },
-    formText: {
-        fontWeight: 'bold',
-        fontSize: 18,
-    },
-    formInput: {
-        flexDirection: 'row',
-        marginTop: 30
-    },
-    textInput: {
-        flex: 1,
-        borderBottomWidth: 1,
-        borderBottomColor: '#AAAAAA',
-        marginLeft: 15
-    },
-    formIcon: {
-        width: 28,
-        height: 28,
-        marginTop: 5
-    },
-    formRegister: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 30
-    },
-    formRegisterText: {
-        fontStyle: 'italic',
-        color: '#B91C1C',
-        borderBottomWidth: 1,
-        borderBottomColor: '#B91C1C',
-        fontWeight: 'bold',
-        marginLeft: 10
-    }
-});
+      </View>
+    </View>
+  );
+};
