@@ -11,6 +11,7 @@ interface Props {
   onChangeText: (property: string, value: any) => void;
 }
 
+
 export const CustomTextInput = ({
   image,
   placeholder,

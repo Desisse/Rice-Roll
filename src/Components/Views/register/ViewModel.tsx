@@ -1,5 +1,6 @@
 import { useState } from "react";
 import React from "react";
+import { ApiRiceRoll } from "../../../Data/sources/remote/api/ApiRiceRoll";
 
 const RegisterViewModel = () => {
   const [values, setValues] = useState({
@@ -15,8 +16,15 @@ const RegisterViewModel = () => {
     setValues({ ...values, [property]: value });
   };
 
-  const register = () => {
-    console.log(JSON.stringify(values));
+  const register = async () => {
+    try {
+      const response = await ApiRiceRoll.post('/users/create', values);
+      console.log('Response: ' + JSON.stringify(response));
+    } catch (error) {
+      console.log('ERROR: ' + error );
+      
+      
+    }
   };
 
   return {
