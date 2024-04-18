@@ -23,6 +23,7 @@ export const RegisterScreen = () => {
       ToastAndroid.show(errorMessage, ToastAndroid.LONG);
     }
   }, [errorMessage]);
+  
 
 /* useEffect(() => {
   //ToastAndroid.show(errorMessage, ToastAndroid.LONG);

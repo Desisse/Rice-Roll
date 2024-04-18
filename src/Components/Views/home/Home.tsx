@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   Text,
@@ -6,6 +6,8 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
+  Platform,
+  ToastAndroid,
 } from "react-native";
 import { RoundedButton } from "../../Components/RoundedButton";
 import { useNavigation } from "@react-navigation/native";
@@ -16,9 +18,16 @@ import { CustomTextInput } from "../../Components/CustomTextInput";
 import styles from "./Styles";
 
 export const HomeScreen = () => {
-  const { email, password, onChange } = useViewModel();
+  const { email, password, errorMessage, onChange, login } = useViewModel();
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  useEffect(() => {
+    if (errorMessage !== "" && Platform.OS === "android") {
+      ToastAndroid.show(errorMessage, ToastAndroid.LONG);
+    }
+  }, [errorMessage]);
+
   return (
     <View style={styles.container}>
       <Image
@@ -48,13 +57,7 @@ export const HomeScreen = () => {
         />
 
         <View style={{ marginTop: 30 }}>
-          <RoundedButton
-            text="INGRESAR"
-            onPress={() => {
-              console.log("Email: ", email);
-              console.log("Password: ", password);
-            }}
-          />
+          <RoundedButton text="INGRESAR" onPress={() => login()} />
         </View>
 
         <View style={styles.formRegister}>
