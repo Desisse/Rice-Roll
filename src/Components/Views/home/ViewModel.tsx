@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LoginAuthUseCase } from "../../../Domain/useCase/auth/LoginAuth";
+import { SaveUserUseCase } from "../../../Domain/useCase/userLocal/SaveUser";
+import { GetUserUseCase } from "../../../Domain/useCase/userLocal/GetUser";
 
 const HomeViewModel = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -8,6 +10,18 @@ const HomeViewModel = () => {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    getUserSession();
+  }, [])
+
+  const getUserSession = async () => {
+    const user = await GetUserUseCase();
+    console.log('USUARIO SESION: ' + JSON.stringify(user));
+    
+  }
+  
+
 
   const onChange = (property: string, value: any) => {
     setValues({ ...values, [property]: value });
@@ -19,6 +33,8 @@ const HomeViewModel = () => {
       console.log("RESPUESTA: " + JSON.stringify(response));
       if (!response.success) {
         setErrorMessage(response.message);
+      } else {
+        await SaveUserUseCase(response.data);
       }
     }
   };
