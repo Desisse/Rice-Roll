@@ -1,34 +1,43 @@
-import React, { useEffect } from "react";
-import { Image, Text, View, ScrollView, ToastAndroid, Platform } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Image,
+  Text,
+  View,
+  ScrollView,
+  ToastAndroid,
+  Platform,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
 import { RoundedButton } from "../../Components/RoundedButton";
 import useViewModel from "./ViewModel";
 import { CustomTextInput } from "../../Components/CustomTextInput";
 import styles from "./Styles";
+import { ModalPickImage } from "../../Components/ModalPickImage";
 
 export const RegisterScreen = () => {
   const {
     name,
     lastname,
     email,
+    image,
     phone,
     password,
     confirmPassword,
     errorMessage,
     onChange,
-    register
+    register,
+    pickImage,
+    takePhoto
   } = useViewModel();
 
+  const [modalVisible, setModalVisible] = useState(false);
+
   useEffect(() => {
-    if (errorMessage !== '' && Platform.OS === 'android') {
+    if (errorMessage !== "" && Platform.OS === "android") {
       ToastAndroid.show(errorMessage, ToastAndroid.LONG);
     }
   }, [errorMessage]);
-  
-
-/* useEffect(() => {
-  //ToastAndroid.show(errorMessage, ToastAndroid.LONG);
- }, [errorMessage]) */
- 
 
   return (
     <View style={styles.container}>
@@ -37,10 +46,17 @@ export const RegisterScreen = () => {
         style={styles.imageBackground}
       />
       <View style={styles.userContainer}>
-        <Image
-          source={require("../../../../assets/UserImage.png")}
-          style={styles.userImage}
-        />
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          {image == "" ? (
+            <Image
+              source={require("../../../../assets/UserImage.png")}
+              style={styles.userImage}
+            />
+          ) : (
+            <Image source={{ uri: image }} style={styles.userImage} />
+          )}
+        </TouchableOpacity>
+
         <Text style={styles.userText}> Selecciona una imagen </Text>
       </View>
 
@@ -109,6 +125,14 @@ export const RegisterScreen = () => {
           </View>
         </ScrollView>
       </View>
+
+      <ModalPickImage 
+      openGallery={pickImage}
+      openCamera={takePhoto}
+      modalUseState={modalVisible}
+      setModalUseState={setModalVisible}
+      />
+
     </View>
   );
 };
