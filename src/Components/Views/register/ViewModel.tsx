@@ -3,6 +3,7 @@ import React from "react";
 import { ApiRiceRoll } from "../../../Data/sources/remote/api/ApiRiceRoll";
 import { RegisterAuthUseCase } from "../../../Domain/useCase/auth/RegisterAuth";
 import * as ImagePicker from "expo-image-picker";
+import { RegisterWithImageAuthUseCase } from "../../../Domain/useCase/auth/RegisterWithImageAuth";
 
 const RegisterViewModel = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -51,7 +52,8 @@ const RegisterViewModel = () => {
 
   const register = async () => {
     if (isValidForm()) {
-      const response = await RegisterAuthUseCase(values);
+      //const response = await RegisterAuthUseCase(values);
+      const response = await RegisterWithImageAuthUseCase(values, file!);
       console.log("RESULT: " + JSON.stringify(response));
     }
   };
@@ -85,6 +87,11 @@ const RegisterViewModel = () => {
       setErrorMessage("Las contraseñas no coinciden.");
       return false;
     }
+    if (values.image === '') {
+      setErrorMessage("Selecciona una imagen");
+      return false;
+    }
+
     return true;
   };
 
