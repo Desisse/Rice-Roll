@@ -8,14 +8,20 @@ import {
   Platform,
   TouchableOpacity,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { RoundedButton } from "../../Components/RoundedButton";
 import useViewModel from "./ViewModel";
 import { CustomTextInput } from "../../Components/CustomTextInput";
 import styles from "./Styles";
 import { ModalPickImage } from "../../Components/ModalPickImage";
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList } from "../../../../App";
 
-export const RegisterScreen = () => {
+interface Props
+  extends StackScreenProps<RootStackParamList, "RegisterScreen"> {}
+
+export const RegisterScreen = ({ navigation, route }: Props) => {
   const {
     name,
     lastname,
@@ -25,10 +31,12 @@ export const RegisterScreen = () => {
     password,
     confirmPassword,
     errorMessage,
+    user,
+    loading,
     onChange,
     register,
     pickImage,
-    takePhoto
+    takePhoto,
   } = useViewModel();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -38,6 +46,12 @@ export const RegisterScreen = () => {
       ToastAndroid.show(errorMessage, ToastAndroid.LONG);
     }
   }, [errorMessage]);
+
+  useEffect(() => {
+    if (user?.id !== null && user?.id !== undefined) {
+      navigation.replace("ProfileInfoScreen");
+    }
+  }, [user]);
 
   return (
     <View style={styles.container}>
@@ -126,13 +140,20 @@ export const RegisterScreen = () => {
         </ScrollView>
       </View>
 
-      <ModalPickImage 
-      openGallery={pickImage}
-      openCamera={takePhoto}
-      modalUseState={modalVisible}
-      setModalUseState={setModalVisible}
+      <ModalPickImage
+        openGallery={pickImage}
+        openCamera={takePhoto}
+        modalUseState={modalVisible}
+        setModalUseState={setModalVisible}
       />
 
+      {loading &&
+        <ActivityIndicator
+          style={styles.loading}
+          size="large"
+          color="#B91C1C"
+        />
+      }
     </View>
   );
 };

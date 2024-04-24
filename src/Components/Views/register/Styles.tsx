@@ -69,6 +69,14 @@ const RegisterStyles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 10,
   },
+  loading: {
+    position: 'absolute',
+    bottom: 0,
+    top: 0,
+    right: 0,
+    left: 0
+
+  }
 });
 
 export default RegisterStyles;

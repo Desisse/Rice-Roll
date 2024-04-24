@@ -17,10 +17,11 @@ import useViewModel from "./ViewModel";
 import { CustomTextInput } from "../../Components/CustomTextInput";
 import styles from "./Styles";
 
-interface Props extends StackScreenProps<RootStackParamList, 'HomeScreen'>{};
+interface Props extends StackScreenProps<RootStackParamList, "HomeScreen"> {}
 
-export const HomeScreen = ({navigation, route}: Props) => {
-  const { email, password, errorMessage, onChange, login, user} = useViewModel();
+export const HomeScreen = ({ navigation, route }: Props) => {
+  const { email, password, errorMessage, onChange, login, user } =
+    useViewModel();
 
   useEffect(() => {
     if (errorMessage !== "" && Platform.OS === "android") {
@@ -29,11 +30,14 @@ export const HomeScreen = ({navigation, route}: Props) => {
   }, [errorMessage]);
 
   useEffect(() => {
-    if(user?.id !== null && user?.id !== undefined) {
-      navigation.replace('ProfileInfoScreen');
+    if (user?.id !== null && user?.id !== undefined) {
+      if (user.roles?.length! > 1) {
+        navigation.replace("RolesScreen");
+      } else {
+        navigation.replace("ProfileInfoScreen");
+      }
     }
-  }, [user])
-  
+  }, [user]);
 
   return (
     <View style={styles.container}>
