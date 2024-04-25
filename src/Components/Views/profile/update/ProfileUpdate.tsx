@@ -10,30 +10,28 @@ import {
   Modal,
   ActivityIndicator,
 } from "react-native";
-import { RoundedButton } from "../../Components/RoundedButton";
+import { RoundedButton } from "../../../Components/RoundedButton";
 import useViewModel from "./ViewModel";
-import { CustomTextInput } from "../../Components/CustomTextInput";
+import { CustomTextInput } from "../../../Components/CustomTextInput";
 import styles from "./Styles";
-import { ModalPickImage } from "../../Components/ModalPickImage";
+import { ModalPickImage } from "../../../Components/ModalPickImage";
 import { StackScreenProps } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../../App";
+import { RootStackParamList } from "../../../../../App";
 
 interface Props
-  extends StackScreenProps<RootStackParamList, "RegisterScreen"> {};
+  extends StackScreenProps<RootStackParamList, "ProfileUpdateScreen"> {};
 
-export const RegisterScreen = ({ navigation, route }: Props) => {
+export const ProfileUpdateScreen = ({ navigation, route }: Props) => {
   const {
     name,
     lastname,
-    email,
     image,
     phone,
-    password,
-    confirmPassword,
     errorMessage,
     user,
     loading,
     onChange,
+    onChangeInfoUpdate,
     register,
     pickImage,
     takePhoto,
@@ -47,23 +45,24 @@ export const RegisterScreen = ({ navigation, route }: Props) => {
     }
   }, [errorMessage]);
 
+//Cambia la info del user
   useEffect(() => {
-    if (user?.id !== null && user?.id !== undefined) {
-      navigation.replace("ClientTabsNavigator");
+    if (user?.name && user?.lastname && user?.phone) {
+      onChangeInfoUpdate(user.name, user.lastname, user.phone);
     }
   }, [user]);
-
+  
   return (
     <View style={styles.container}>
       <Image
-        source={require("../../../../assets/sushi.jpg")}
+        source={require("../../../../../assets/fondo.jpg")}
         style={styles.imageBackground}
       />
       <View style={styles.userContainer}>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           {image == "" ? (
             <Image
-              source={require("../../../../assets/UserImage.png")}
+              source={{uri: user?.image}}
               style={styles.userImage}
             />
           ) : (
@@ -76,10 +75,10 @@ export const RegisterScreen = ({ navigation, route }: Props) => {
 
       <View style={styles.form}>
         <ScrollView>
-          <Text style={styles.formText}>REGISTRARSE</Text>
+          <Text style={styles.formText}>ACTUALIZA TU PERFIL</Text>
 
           <CustomTextInput
-            image={require("../../../../assets/user.png")}
+            image={require("../../../../../assets/user.png")}
             placeholder="Nombre"
             value={name}
             keyboardType="default"
@@ -88,7 +87,7 @@ export const RegisterScreen = ({ navigation, route }: Props) => {
           />
 
           <CustomTextInput
-            image={require("../../../../assets/user.png")}
+            image={require("../../../../../assets/user.png")}
             placeholder="Apellido"
             value={lastname}
             keyboardType="default"
@@ -97,41 +96,12 @@ export const RegisterScreen = ({ navigation, route }: Props) => {
           />
 
           <CustomTextInput
-            image={require("../../../../assets/email.png")}
-            placeholder="Email"
-            value={email}
-            keyboardType="email-address"
-            property="email"
-            onChangeText={onChange}
-          />
-
-          <CustomTextInput
-            image={require("../../../../assets/phone.png")}
+            image={require("../../../../../assets/phone.png")}
             placeholder="Telefono"
             value={phone}
             keyboardType="numeric"
             property="phone"
             onChangeText={onChange}
-          />
-
-          <CustomTextInput
-            image={require("../../../../assets/password.png")}
-            placeholder="Contraseña"
-            value={password}
-            keyboardType="default"
-            property="password"
-            onChangeText={onChange}
-            secureTextEntry={true}
-          />
-
-          <CustomTextInput
-            image={require("../../../../assets/password.png")}
-            placeholder="Confirmar Contraseña"
-            value={confirmPassword}
-            keyboardType="default"
-            property="confirmPassword"
-            onChangeText={onChange}
-            secureTextEntry={true}
           />
 
           <View style={{ marginTop: 30 }}>
