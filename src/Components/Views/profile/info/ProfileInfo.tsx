@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, Button, Image, TouchableOpacity } from "react-native";
 import useViewModel from "./ViewModel";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
@@ -9,7 +9,14 @@ import { RoundedButton } from "../../../Components/RoundedButton";
 
 export const ProfileInfoScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const { removeSession, user } = useViewModel();
+  const { user, removeUserSession } = useViewModel();
+
+  useEffect(() => {
+    if(user.id === '') {
+      navigation.replace("HomeScreen");
+    }
+  }, [user])
+  
 
   return (
     <View style={styles.container}>
@@ -21,8 +28,7 @@ export const ProfileInfoScreen = () => {
       <TouchableOpacity
         style={styles.logout}
         onPress={() => {
-          removeSession();
-          navigation.replace("HomeScreen");
+          removeUserSession();
         }}
       >
         <Image
@@ -32,7 +38,11 @@ export const ProfileInfoScreen = () => {
       </TouchableOpacity>
 
       <View style={styles.userContainer}>
+        {
+        user?.image !== '' 
+        &&
         <Image source={{ uri: user?.image }} style={styles.userImage} />
+        }
       </View>
       <View style={styles.form}>
         <Text style={styles.formText}>Perfil </Text>
@@ -72,7 +82,7 @@ export const ProfileInfoScreen = () => {
         </View>
 
         <RoundedButton onPress={() => {
-          navigation.navigate('ProfileUpdateScreen'); 
+          navigation.navigate('ProfileUpdateScreen', {user: user!}); 
         }} text="Actualizar Información" />
       </View>
     </View>

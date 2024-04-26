@@ -1,16 +1,19 @@
-import { AxiosError } from "axios";
-import { User } from "../../Domain/entities/User";
-import { AuthRepository } from "../../Domain/repositories/AuthRepository";
-import {ApiRiceRoll,ApiRiceRollForImage} from "../sources/remote/api/ApiRiceRoll";
-import { ResponseApiRice } from "../sources/remote/models/ResponseApiRice";
 import { ImagePickerAsset } from "expo-image-picker";
+import { User } from "../../Domain/entities/User";
+import { UserRepository } from "../../Domain/repositories/UserRepository";
+import { ResponseApiRice } from "../sources/remote/models/ResponseApiRice";
+import { AxiosError } from "axios";
+import {
+  ApiRiceRoll,
+  ApiRiceRollForImage,
+} from "../sources/remote/api/ApiRiceRoll";
 import mime from "mime";
 
-export class AuthRepositoryImpl implements AuthRepository {
-  async register(user: User): Promise<ResponseApiRice> {
+export class UserRepositoryImpl implements UserRepository {
+  async update(user: User): Promise<ResponseApiRice> {
     try {
-      const response = await ApiRiceRoll.post<ResponseApiRice>(
-        "/users/create",
+      const response = await ApiRiceRoll.put<ResponseApiRice>(
+        "/users/updateWithoutImage",
         user
       );
       return Promise.resolve(response.data);
@@ -24,13 +27,12 @@ export class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  async registerWithImage(
+  async updateWithImage(
     user: User,
     file: ImagePickerAsset
   ): Promise<ResponseApiRice> {
     try {
       let data = new FormData();
-
       data.append(
         "image",
         {
@@ -43,27 +45,10 @@ export class AuthRepositoryImpl implements AuthRepository {
       );
 
       data.append("user", JSON.stringify(user));
-      const response = await ApiRiceRollForImage.post<ResponseApiRice>(
-        "/users/createWithImage",
+      const response = await ApiRiceRollForImage.put<ResponseApiRice>(
+        "/users/update",
         data
       );
-      return Promise.resolve(response.data);
-    } catch (error) {
-      let e = error as AxiosError;
-      console.log("ERROR:" + JSON.stringify(e.response?.data));
-      const apiError: ResponseApiRice = JSON.parse(
-        JSON.stringify(e.response?.data)
-      );
-      return Promise.resolve(apiError);
-    }
-  }
-
-  async login(email: string, password: string): Promise<ResponseApiRice> {
-    try {
-      const response = await ApiRiceRoll.post<ResponseApiRice>("/users/login", {
-        email: email,
-        password: password,
-      });
       return Promise.resolve(response.data);
     } catch (error) {
       let e = error as AxiosError;

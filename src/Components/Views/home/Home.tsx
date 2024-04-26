@@ -30,14 +30,14 @@ export const HomeScreen = ({ navigation, route }: Props) => {
   }, [errorMessage]);
 
   useEffect(() => {
-    if (user?.id !== null && user?.id !== undefined) {
+    if (user?.id !== null && user?.id !== undefined && user?.id !== '') {
       if (user.roles?.length! > 1) {
         navigation.replace("RolesScreen");
       } else {
         navigation.replace("ClientTabsNavigator");
       }
     }
-  }, [user]);
+  }, [user]); 
 
   return (
     <View style={styles.container}>

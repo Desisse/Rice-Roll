@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LoginAuthUseCase } from "../../../Domain/useCase/auth/LoginAuth";
 import { SaveUserLocalUseCase } from "../../../Domain/useCase/userLocal/SaveUserLocal";
 import { GetUserLocalUseCase } from "../../../Domain/useCase/userLocal/GetUserLocal";
 import { useUserLocal } from "../../../Presentation/hooks/useUserLocal";
+import { UserContext } from "../../../Presentation/context/UserContext";
 
 const HomeViewModel = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -12,7 +13,8 @@ const HomeViewModel = () => {
     password: "",
   });
 
-  const { user, getUserSession } = useUserLocal();
+  //const { user, getUserSession } = useUserLocal();
+  const { user, saveUserSession} = useContext( UserContext);
   console.log('USUARIO DE SESION: ' + JSON.stringify(user));
   
 
@@ -27,11 +29,10 @@ const HomeViewModel = () => {
       if (!response.success) {
         setErrorMessage(response.message);
       } else {
-        await SaveUserLocalUseCase(response.data);
-        getUserSession();
+        saveUserSession(response.data);
       }
     }
-  };
+  }; 
 
   const isValidForm = (): boolean => {
     if (values.email === "") {

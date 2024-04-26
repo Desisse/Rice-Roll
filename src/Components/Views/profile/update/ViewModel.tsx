@@ -1,28 +1,22 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import React from "react";
 import { ApiRiceRoll } from "../../../../Data/sources/remote/api/ApiRiceRoll";
-import { RegisterAuthUseCase } from "../../../../Domain/useCase/auth/RegisterAuth";
 import * as ImagePicker from "expo-image-picker";
-import { RegisterWithImageAuthUseCase } from "../../../../Domain/useCase/auth/RegisterWithImageAuth";
 import { SaveUserLocalUseCase } from "../../../../Domain/useCase/userLocal/SaveUserLocal";
 import { useUserLocal } from "../../../../Presentation/hooks/useUserLocal";
+import { UpdateUserUseCase } from "../../../../Domain/useCase/user/UpdateUser";
+import { UpdateWithImageUserUseCase } from "../../../../Domain/useCase/user/UpdateWithImageUser";
+import { User } from "../../../../Domain/entities/User";
+import { ResponseApiRice } from "../../../../Data/sources/remote/models/ResponseApiRice";
+import { UserContext } from "../../../../Presentation/context/UserContext";
 
-const ProfileUpdateViewModel = () => {
+const ProfileUpdateViewModel = (user: User) => {
   const [errorMessage, setErrorMessage] = useState("");
-
-  const [values, setValues] = useState({
-    name: "",
-    lastname: "",
-    email: "",
-    image: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-  });
-
+  const [values, setValues] = useState(user);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<ImagePicker.ImagePickerAsset>();
-  const { user, getUserSession } = useUserLocal();
+  const { getUserSession } = useUserLocal();
+  const { saveUserSession } = useContext(UserContext);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -58,16 +52,22 @@ const ProfileUpdateViewModel = () => {
     setValues({ ...values, name, lastname, phone});
   };
 
-  const register = async () => {
+  const update = async () => {
     if (isValidForm()) {
       setLoading(true);
-      //const response = await RegisterAuthUseCase(values);
-      const response = await RegisterWithImageAuthUseCase(values, file!);
+
+      let response = {} as ResponseApiRice;
+
+      if(values.image?.includes('https://')){
+         response = await UpdateUserUseCase(values);
+      }else {
+         response = await UpdateWithImageUserUseCase(values, file!);
+      }
+      
       setLoading(false);
       console.log("RESULT: " + JSON.stringify(response));
       if(response.success) {
-        await SaveUserLocalUseCase(response.data);
-        getUserSession();
+        saveUserSession(response.data);
       }
       else{
         setErrorMessage(response.message);
@@ -83,31 +83,13 @@ const ProfileUpdateViewModel = () => {
     if (values.lastname === "") {
       setErrorMessage("El campo apellido no puede estar vacío.");
       return false;
-    }
-    if (values.email === "") {
-      setErrorMessage("Por favor, ingresa tu correo electrónico.");
-      return false;
-    }
+    } 
     if (values.phone === "") {
       setErrorMessage("El campo teléfono no puede estar vacío.");
       return false;
     }
-    if (values.password === "") {
-      setErrorMessage("La contraseña no puede estar vacía.");
-      return false;
-    }
-    if (values.confirmPassword === "") {
-      setErrorMessage("Por favor, confirma tu contraseña.");
-      return false;
-    }
-    if (values.password !== values.confirmPassword) {
-      setErrorMessage("Las contraseñas no coinciden.");
-      return false;
-    }
-    if (values.image === '') {
-      setErrorMessage("Selecciona una imagen");
-      return false;
-    }
+
+
 
     return true;
   };
@@ -115,7 +97,7 @@ const ProfileUpdateViewModel = () => {
   return {
     ...values,
     onChange,
-    register,
+    update,
     pickImage,
     takePhoto,
     onChangeInfoUpdate,
