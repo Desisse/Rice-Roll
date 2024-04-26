@@ -12,6 +12,7 @@ import { UserContext } from "../../../../Presentation/context/UserContext";
 
 const ProfileUpdateViewModel = (user: User) => {
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [values, setValues] = useState(user);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<ImagePicker.ImagePickerAsset>();
@@ -68,6 +69,7 @@ const ProfileUpdateViewModel = (user: User) => {
       console.log("RESULT: " + JSON.stringify(response));
       if(response.success) {
         saveUserSession(response.data);
+        setSuccessMessage(response.message);
       }
       else{
         setErrorMessage(response.message);
@@ -103,7 +105,8 @@ const ProfileUpdateViewModel = (user: User) => {
     onChangeInfoUpdate,
     errorMessage,
     user,
-    loading
+    loading,
+    successMessage
   };
 };
 
