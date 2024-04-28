@@ -52,6 +52,53 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     }
   }
 
+  async update(category: Category): Promise<ResponseApiRice> {
+    try {
+      const response = await ApiRiceRoll.put<ResponseApiRice>("/categories/update", category);
+      return Promise.resolve(response.data);
+    } catch (error) {
+      let e = error as AxiosError;
+      console.log("ERROR:" + JSON.stringify(e.response?.data));
+      const apiError: ResponseApiRice = JSON.parse(
+        JSON.stringify(e.response?.data)
+      );
+      return Promise.resolve(apiError);
+    }
+  }
+
+  async updateWithImage(category: Category, file: ImagePicker.ImagePickerAsset): Promise<ResponseApiRice> {
+    try {
+      let data = new FormData();
+      data.append(
+        "image",
+        {
+          //@ts-ignore
+          uri: file.uri,
+          name: file.uri.split("/").pop(),
+          type: mime.getType(file.uri)!,
+        },
+        undefined
+      );
+
+      data.append("category", JSON.stringify(category));
+      const response = await ApiRiceRollForImage.put<ResponseApiRice>(
+        "/categories/updateWithImage",
+        data
+      );
+      return Promise.resolve(response.data);
+      
+    } catch (error) {
+      let e = error as AxiosError;
+      console.log("ERROR:" + JSON.stringify(e.response?.data));
+      const apiError: ResponseApiRice = JSON.parse(
+        JSON.stringify(e.response?.data)
+      );
+      return Promise.resolve(apiError);
+      
+    }
+    
+  }
+
   async remove(id: string): Promise<ResponseApiRice> {
     try {
       const response = await ApiRiceRoll.delete<ResponseApiRice>(`/categories/delete/${id}`);

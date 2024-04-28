@@ -22,7 +22,7 @@ export const AdminCategoryUpdateScreen = ({navigation, route}: Props) => {
     onChange,
     pickImage,
     takePhoto,
-    createCategory
+    updateCategory
   } = useViewModel(category);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -69,7 +69,7 @@ export const AdminCategoryUpdateScreen = ({navigation, route}: Props) => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <RoundedButton text="Crear Categoría" onPress={() => createCategory()} />
+        <RoundedButton text="Editar Categoría" onPress={() => updateCategory()} />
       </View>
 
       <ModalPickImage
