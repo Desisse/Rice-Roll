@@ -1,10 +1,26 @@
-import React from "react";
-import { View, Text} from 'react-native'
+import React, { useEffect } from "react";
+import { View, Text, FlatList} from 'react-native';
+import useViewModel from './ViewModel';
+import { AdminCategoryListItem } from "./Item";
 
 export const AdminCategoryListScreen = () => {
+
+  const {categories, getCategories} = useViewModel();
+
+  useEffect(() => {
+   getCategories();
+  }, [])
+  
+
+
   return (
-    <View>
-      <Text> AdminCategoryListScreen </Text>
+    <View style={{backgroundColor: 'white'}}>
+      <FlatList
+      data={ categories}
+      keyExtractor={(item) => item.id!}
+      renderItem={ ({item}) => <AdminCategoryListItem category={item} />}
+      />
+
     </View>
   );
 };

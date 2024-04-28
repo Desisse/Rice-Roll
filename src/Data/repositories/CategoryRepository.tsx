@@ -1,12 +1,27 @@
 import { Category } from "../../Domain/entities/Category";
 import { CategoryRepository } from "../../Domain/repositories/CategoryRepository";
-import { ApiRiceRollForImage } from "../sources/remote/api/ApiRiceRoll";
+import {
+  ApiRiceRoll,
+  ApiRiceRollForImage,
+} from "../sources/remote/api/ApiRiceRoll";
 import { ResponseApiRice } from "../sources/remote/models/ResponseApiRice";
 import * as ImagePicker from "expo-image-picker";
 import mime from "mime";
 import axios, { AxiosError } from "axios";
 
 export class CategoryRepositoryImpl implements CategoryRepository {
+
+  async getAll(): Promise<Category[]> {
+    try {
+      const response = await ApiRiceRoll.get<Category[]>("/categories/getAll");
+      return Promise.resolve(response.data);
+    } catch (error) {
+      let e = error as AxiosError;
+      console.log("ERROR:" + JSON.stringify(e.response?.data));
+      return Promise.resolve([]);
+    }
+  }
+
   async create(category: Category, file: ImagePicker.ImagePickerAsset): Promise<ResponseApiRice> {
     try {
       let data = new FormData();
