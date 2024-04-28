@@ -11,6 +11,8 @@ import { ProfileUpdateScreen } from "./src/Components/Views/profile/update/Profi
 import { User } from "./src/Domain/entities/User";
 import { UserProvider } from "./src/Presentation/context/UserContext";
 import { AdminCategoryCreateScreen } from "./src/Components/Views/admin/category/create/CategoryCreate";
+import { AdminCategoryUpdateScreen } from "./src/Components/Views/admin/category/update/CategoryUpdate";
+import { Category } from "./src/Domain/entities/Category";
 
 export type RootStackParamList = {
   HomeScreen: undefined;
@@ -20,6 +22,7 @@ export type RootStackParamList = {
   ClientTabsNavigator: undefined;
   ProfileUpdateScreen: { user: User };
   AdminCategoryCreateScreen: undefined;
+  AdminCategoryUpdateScreen: {category: Category};
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -66,6 +69,12 @@ const App = () => {
             name="AdminCategoryCreateScreen"
             component={AdminCategoryCreateScreen}
             options={{ headerShown: true, title: "Nueva Categoría" }}
+          />
+
+            <Stack.Screen
+            name="AdminCategoryUpdateScreen"
+            component={AdminCategoryUpdateScreen}
+            options={{ headerShown: true, title: "Editar Categoría" }}
           />
         </Stack.Navigator>
       </UserState>
