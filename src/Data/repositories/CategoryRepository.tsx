@@ -51,4 +51,21 @@ export class CategoryRepositoryImpl implements CategoryRepository {
       return Promise.resolve(apiError);
     }
   }
+
+  async remove(id: string): Promise<ResponseApiRice> {
+    try {
+      const response = await ApiRiceRoll.delete<ResponseApiRice>(`/categories/delete/${id}`);
+      return Promise.resolve(response.data);
+      
+    } catch (error) {
+      let e = error as AxiosError;
+      console.log("ERROR:" + JSON.stringify(e.response?.data));
+      const apiError: ResponseApiRice = JSON.parse(
+        JSON.stringify(e.response?.data)
+      );
+      return Promise.resolve(apiError);
+      
+    }
+  }
+
 }

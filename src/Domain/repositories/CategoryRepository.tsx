@@ -6,4 +6,5 @@ export interface CategoryRepository {
 
     getAll(): Promise<Category[]>;
     create(category: Category, file: ImagePicker.ImagePickerAsset): Promise<ResponseApiRice>;
+    remove(id: string): Promise<ResponseApiRice>;
 }

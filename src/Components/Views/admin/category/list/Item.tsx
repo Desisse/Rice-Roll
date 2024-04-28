@@ -4,9 +4,10 @@ import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 
 interface Props {
   category: Category;
+  remove: (id: string) => void;
 }
 
-export const AdminCategoryListItem = ({ category }: Props) => {
+export const AdminCategoryListItem = ({ category, remove }: Props) => {
   return (
     <TouchableOpacity>
       <View style={styles.container}>
@@ -24,7 +25,7 @@ export const AdminCategoryListItem = ({ category }: Props) => {
               source={require("../../../../../../assets/edit.png")}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => remove(category.id!)}>
             <Image
               style={styles.actionImage}
               source={require("../../../../../../assets/delete.png")}
