@@ -12,10 +12,10 @@ import {
 import { RoundedButton } from "../../Components/RoundedButton";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../../App";
 import useViewModel from "./ViewModel";
 import { CustomTextInput } from "../../Components/CustomTextInput";
 import styles from "./Styles";
+import { RootStackParamList } from "../../../Presentation/navigator/MainStackNavigator";
 
 interface Props extends StackScreenProps<RootStackParamList, "HomeScreen"> {}
 

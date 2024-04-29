@@ -6,9 +6,10 @@ import useViewModel from "./ViewModel";
 import { RoundedButton } from "../../../../Components/RoundedButton";
 import { ModalPickImage } from "../../../../Components/ModalPickImage";
 import { StackScreenProps } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../../../../App";
+import { CategoryStackParamList } from "../../../../../Presentation/navigator/AdminCategoryNavigator";
 
-interface Props extends StackScreenProps<RootStackParamList, "AdminCategoryUpdateScreen"> {}
+
+interface Props extends StackScreenProps<CategoryStackParamList, "AdminCategoryUpdateScreen"> {}
 
 
 export const AdminCategoryUpdateScreen = ({navigation, route}: Props) => {

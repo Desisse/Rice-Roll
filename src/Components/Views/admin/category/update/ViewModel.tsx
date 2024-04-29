@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { Category } from "../../../../../Domain/entities/Category";
 import { UpdateCategoryUseCase } from "../../../../../Domain/useCase/category/UpdateCategory";
 import { UpdateWithImageCategoryUseCase } from "../../../../../Domain/useCase/category/UpdateWithImageCategory";
 import { ResponseApiRice } from "../../../../../Data/sources/remote/models/ResponseApiRice";
+import { CategoryContext } from "../../../../../Presentation/context/CategoryContext";
 
 const AdminCategoryUpdateViewModel = (category: Category) => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<ImagePicker.ImagePickerAsset>();
   const [responseMessage, setResponseMessage] = useState("");
-
   const [values, setValues] = useState(category);
+  const {update, updateWithImage} = useContext(CategoryContext);
 
   const onChange = (property: string, value: any) => {
     setValues({ ...values, [property]: value });
@@ -20,9 +21,9 @@ const AdminCategoryUpdateViewModel = (category: Category) => {
     setLoading(true);
     let response = {} as ResponseApiRice;
     if(values.image?.includes('https://')){
-     response = await UpdateCategoryUseCase(values);
+     response = await update(values);
     }else {
-       response = await UpdateWithImageCategoryUseCase(values, file!);
+       response = await updateWithImage(values, file!);
     }
     setLoading(false);
     setResponseMessage(response.message);

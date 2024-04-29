@@ -7,9 +7,6 @@ export const AdminCategoryListScreen = () => {
 
   const {categories, responseMessage, getCategories, deleteCategory} = useViewModel();
 
-  useEffect(() => {
-   getCategories();
-  }, [])
 
   useEffect(() => {
     if (responseMessage !== "" && Platform.OS === "android") {

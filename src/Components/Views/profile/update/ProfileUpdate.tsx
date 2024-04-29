@@ -16,7 +16,8 @@ import { CustomTextInput } from "../../../Components/CustomTextInput";
 import styles from "./Styles";
 import { ModalPickImage } from "../../../Components/ModalPickImage";
 import { StackScreenProps } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../../../App";
+import { RootStackParamList } from "../../../../Presentation/navigator/MainStackNavigator";
+
 
 interface Props
   extends StackScreenProps<RootStackParamList, "ProfileUpdateScreen"> {};

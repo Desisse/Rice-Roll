@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { CreateCategoryUseCase } from "../../../../../Domain/useCase/category/CreateCategory";
+import { CategoryContext } from "../../../../../Presentation/context/CategoryContext";
 
 const AdminCategoryCreateViewModel = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<ImagePicker.ImagePickerAsset>();
   const [responseMessage, setResponseMessage] = useState("");
+  const { create } = useContext(CategoryContext);
 
   const [values, setValues] = useState({
     name: "",
@@ -19,7 +21,7 @@ const AdminCategoryCreateViewModel = () => {
 
   const createCategory = async () => {
     setLoading(true);
-    const response = await CreateCategoryUseCase(values, file!);
+    const response = await create(values, file!);
     setLoading(false);
     setResponseMessage(response.message);
     resetForm();
