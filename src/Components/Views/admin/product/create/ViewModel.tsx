@@ -3,6 +3,7 @@ import * as ImagePicker from "expo-image-picker";
 import { CreateCategoryUseCase } from "../../../../../Domain/useCase/category/CreateCategory";
 import { CategoryContext } from "../../../../../Presentation/context/CategoryContext";
 import { Category } from "../../../../../Domain/entities/Category";
+import { ProductContext } from "../../../../../Presentation/context/ProductContext";
 
 const AdminProductCreateViewModel = (category: Category) => {
 
@@ -12,7 +13,7 @@ const AdminProductCreateViewModel = (category: Category) => {
   const [file3, setFile3] = useState<ImagePicker.ImagePickerAsset>();
 
   const [responseMessage, setResponseMessage] = useState("");
-  const { create } = useContext(CategoryContext);
+  const { create } = useContext(ProductContext);
 
   const [values, setValues] = useState({
     name: "",
@@ -20,8 +21,8 @@ const AdminProductCreateViewModel = (category: Category) => {
     image1: "",
     image2: "",
     image3: "",
-    price: "",
-    idCategory: category.id,
+    price: 0,
+    id_category: category.id,
   });
 
   const onChange = (property: string, value: any) => {
@@ -30,12 +31,19 @@ const AdminProductCreateViewModel = (category: Category) => {
 
   const createProduct = async () => {
     console.log('Producto Formulario: ' + JSON.stringify(values));
+
+    let files = [];
+    files.push(file1!);
+    files.push(file2!);
+    files.push(file3!);    
+    setLoading(true);
+    const response = await create(values, files);
+    setLoading(false);
+    setResponseMessage(response.message);
+    if(!response.success) {
+      resetForm();
+    }
     
-    // setLoading(true);
-    // const response = await create(values, file!);
-    // setLoading(false);
-    // setResponseMessage(response.message);
-    // resetForm();
   };
 
   const pickImage = async (numberImage: number) => {
@@ -86,11 +94,15 @@ const AdminProductCreateViewModel = (category: Category) => {
   };
 
   const resetForm = async () => {
-    // setValues({
-    //   name: "",
-    //   description: "",
-    //   image: "",
-    // });
+    setValues({
+      name: "",
+      description: "",
+      image1: "",
+      image2: "",
+      image3: "",
+      price: 0,
+      id_category: category.id,
+    });
   };
 
   return {

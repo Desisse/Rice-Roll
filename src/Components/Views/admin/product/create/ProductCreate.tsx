@@ -132,7 +132,7 @@ export const AdminProductCreateScreen = ({ navigation, route }: Props) => {
             image={require("../../../../../../assets/price.png")}
             keyboardType="numeric"
             property="price"
-            value={price}
+            value={price.toString()}
             onChangeText={onChange}
           />
 
