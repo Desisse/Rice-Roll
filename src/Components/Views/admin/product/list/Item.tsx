@@ -2,18 +2,20 @@ import React from "react";
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { CategoryStackParamList } from "../../../../../Presentation/navigator/AdminCategoryNavigator";
 import { Product } from "../../../../../Domain/entities/Product";
+import { ProductStackParamList } from "../../../../../Presentation/navigator/AdminProductNavigator";
+import { Category } from "../../../../../Domain/entities/Category";
 
 
 interface Props {
   product: Product;
+  category: Category;
   remove: (product: Product) => void;
 }
 
-export const AdminProductListItem = ({ product, remove }: Props) => {
+export const AdminProductListItem = ({ product, category, remove }: Props) => {
 
-  const navigation = useNavigation<StackNavigationProp<CategoryStackParamList>>();
+  const navigation = useNavigation<StackNavigationProp<ProductStackParamList>>();
   return (
     <TouchableOpacity 
     // onPress={() => navigation.navigate('AdminProductNavigator', {category: category})}
@@ -30,7 +32,7 @@ export const AdminProductListItem = ({ product, remove }: Props) => {
 
         <View style={styles.actionContainer}>
           <TouchableOpacity 
-          // onPress={() => navigation.navigate('AdminCategoryUpdateScreen', {category: category})}
+          onPress={() => navigation.navigate('AdminProductUpdateScreen', {product: product, category: category})}
           >
             <Image
               style={styles.actionImage}
