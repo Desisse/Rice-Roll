@@ -8,7 +8,7 @@ import { Product } from "../../../../../Domain/entities/Product";
 
 interface Props {
   product: Product;
-  remove: (id: string) => void;
+  remove: (product: Product) => void;
 }
 
 export const AdminProductListItem = ({ product, remove }: Props) => {
@@ -37,7 +37,7 @@ export const AdminProductListItem = ({ product, remove }: Props) => {
               source={require("../../../../../../assets/edit.png")}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => remove(product.id!)}>
+          <TouchableOpacity onPress={() => remove(product)}>
             <Image
               style={styles.actionImage}
               source={require("../../../../../../assets/delete.png")}

@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, Platform, ToastAndroid } from 'react-native';
 import { ProductStackParamList } from '../../../../../Presentation/navigator/AdminProductNavigator';
 import useViewModel from './ViewModel';
 import { AdminProductListItem } from './Item';
@@ -10,11 +10,17 @@ interface Props extends StackScreenProps<ProductStackParamList, 'AdminProductLis
 export const AdminProductListScreen = ({navigation, route}: Props) => {
 
     const {category} = route.params;
-    const { products, getProducts} = useViewModel();
+    const { products, responseMessage, getProducts, deleteProduct} = useViewModel();
     
     useEffect(() => {
      getProducts(category.id!);
     }, [])
+
+    useEffect(() => {
+      if (responseMessage !== "" && Platform.OS === "android") {
+        ToastAndroid.show(responseMessage, ToastAndroid.LONG);
+      }
+    }, [responseMessage]);
     
     
   return (
@@ -22,7 +28,7 @@ export const AdminProductListScreen = ({navigation, route}: Props) => {
        <FlatList 
        data={ products}
        keyExtractor={(item) => item.id!}
-       renderItem={({item}) => <AdminProductListItem product={item} remove={() => {}}/>}
+       renderItem={({item}) => <AdminProductListItem product={item} remove={deleteProduct}/>}
        />
     </View>
   )
