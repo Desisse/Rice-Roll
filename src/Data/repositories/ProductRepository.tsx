@@ -7,6 +7,19 @@ import mime from 'mime';
 import { ApiRiceRollForImage, ApiRiceRoll } from "../sources/remote/api/ApiRiceRoll";
 
 export class ProductRepositoryImpl implements ProductRepository {
+
+  async getProductsByCategory(id_category: string): Promise<Product[]> {
+    try {
+      const response = await ApiRiceRoll.get<Product[]>(`/products/findByCategory/${id_category}`);
+      return Promise.resolve(response.data);
+    } catch (error) {
+      let e = error as AxiosError;
+      console.log("ERROR:" + JSON.stringify(e.response?.data));
+      return Promise.resolve([]);
+            
+    }
+  }
+
     async create(product: Product, files: ImagePickerAsset[]): Promise<ResponseApiRice> {
         try {
             let data = new FormData();
