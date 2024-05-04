@@ -16,12 +16,7 @@ export const ClientCategoryItem = ({category, height, width, navigation}: Props)
   return (
     <TouchableOpacity 
     onPress={() => {
-      // if(rol.name === 'ADMIN') {
-      //   navigation.replace('AdminTabsNavigator');
-      // }
-      // else if(rol.name === 'CLIENTE') {
-      //   navigation.replace('ClientTabsNavigator');
-      // }
+      navigation.navigate('ClientProductListScreen', {id_category: category.id!})
     }}
     style={{...styles.container, height, width: width}}>
       <View style={styles.imageContainer}>
