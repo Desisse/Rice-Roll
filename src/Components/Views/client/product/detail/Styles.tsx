@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 const ClientProductDetailStyles = StyleSheet.create({
     productImage: {
         width: '100%',
-        height: '45%'
+        height: '47%'
     },
     container: {
         flex: 1, 
@@ -12,7 +12,7 @@ const ClientProductDetailStyles = StyleSheet.create({
     productDetail: {
         position: 'absolute',
         width: '100%',
-        height: '57%',
+        height: '55%',
         backgroundColor: 'white',
         bottom: 0,
         borderTopLeftRadius: 30,
@@ -34,17 +34,19 @@ const ClientProductDetailStyles = StyleSheet.create({
     productDescription: {
         marginTop: 10,
         fontSize: 18,
-        fontWeight: '500'
+        fontWeight: '800',
+        color: '#A94438'
     },
     productContent: {
-        fontSize: 15,
-        marginTop: 5
+        fontSize: 17,
+        marginTop: 5,
+        fontWeight: '300',
     },
     productPrice: {
-        fontSize: 15,
+        fontSize: 18,
         marginTop: 5,
         color: 'red',
-        fontWeight: '600'
+        fontWeight: '700'
     },
     productActions: {
         flexDirection: 'row',
@@ -58,30 +60,43 @@ const ClientProductDetailStyles = StyleSheet.create({
     },
     actionLess: {
         backgroundColor: '#3a3a3a',
-        paddingVertical: 5,
+        paddingVertical: 8,
         paddingHorizontal: 10,
         alignSelf: 'center',
         borderBottomLeftRadius: 10,
-        borderTopLeftRadius: 10
+        borderTopLeftRadius: 10,
+        bottom: 43
     },
     quantity: {
         backgroundColor: '#3a3a3a',
-        paddingVertical: 5,
+        paddingVertical: 8,
         paddingHorizontal: 15,
         alignSelf: 'center',
+        bottom: 43
     },
     actionAdd: {
         backgroundColor: '#3a3a3a',
-        paddingVertical: 5,
+        paddingVertical: 8,
         paddingHorizontal: 10,
         alignSelf: 'center',
         borderTopRightRadius: 10,
-        borderBottomRightRadius: 10
+        borderBottomRightRadius: 10,
+        bottom: 43
     },
     button: {
         flex: 1,
         marginLeft: 20,
-        alignItems: 'center'
+        alignItems: 'center',
+        bottom: 35
+    },
+    back: {
+        position: 'absolute',
+        top: 45,
+        left: 15
+    },
+    backImage: {
+        height: 40,
+        width: 40
     }
 })
 
