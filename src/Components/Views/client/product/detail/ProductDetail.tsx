@@ -15,7 +15,7 @@ export const ClientProductDetailScreen = ({ navigation, route }: Props) => {
   const { product } = route.params;
   const width = Dimensions.get("window").width;
   const height = Dimensions.get("window").height;
-  const { productImages, quantity, price, addItem, removeItem } =
+  const { shoppingBag, productImages, quantity, price, addToBag, addItem, removeItem } =
     useViewModel(product);
 
   return (
@@ -67,7 +67,7 @@ export const ClientProductDetailScreen = ({ navigation, route }: Props) => {
           </TouchableOpacity>
 
           <View style={styles.button}>
-            <RoundedButton text="Agregar al carrito" onPress={() => {}} />
+            <RoundedButton text="Agregar al carrito" onPress={() => addToBag()} />
           </View>
         </View>
       </View>
