@@ -8,6 +8,7 @@ import { TouchableOpacity, Image } from "react-native";
 import { ClientShoppingBagScreen } from "../../Components/Views/client/shopping_bag/ShoppingBag";
 import { ClientAddressListScreen } from "../../Components/Views/client/address/list/AddressList";
 import { ClientAddressCreateScreen } from "../../Components/Views/client/address/create/AddressCreate";
+import { ClientAddressMapScreen } from "../../Components/Views/client/address/map/AddressMap";
 
 export type ClientStackParamList = {
   ClientCategoryListScreen: undefined;
@@ -15,7 +16,8 @@ export type ClientStackParamList = {
   ClientProductDetailScreen: { product: Product };
   ClientShoppingBagScreen: undefined;
   ClientAddressListScreen: undefined;
-  ClientAddressCreateScreen: undefined;
+  ClientAddressCreateScreen: {refPoint: string, latitude: number, longitude: number} | undefined;
+  ClientAddressMapScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<ClientStackParamList>();
@@ -83,7 +85,7 @@ export const ClientStackNavigator = () => {
             title: "Mis Direcciones",
             headerRight: () => (
               <TouchableOpacity
-                onPress={() => navigation.navigate('ClientAddressCreateScreen')}
+                onPress={() => navigation.navigate("ClientAddressCreateScreen")}
               >
                 <Image
                   source={require("../../../assets/add.png")}
@@ -94,7 +96,7 @@ export const ClientStackNavigator = () => {
           })}
         />
 
-          <Stack.Screen
+        <Stack.Screen
           name="ClientAddressCreateScreen"
           component={ClientAddressCreateScreen}
           options={{
@@ -103,6 +105,14 @@ export const ClientStackNavigator = () => {
           }}
         />
 
+        <Stack.Screen
+          name="ClientAddressMapScreen"
+          component={ClientAddressMapScreen}
+          options={{
+            headerShown: true,
+            title: "Ubica tu dirección en el mapa",
+          }}
+        />
       </Stack.Navigator>
     </ShoppingBagState>
   );

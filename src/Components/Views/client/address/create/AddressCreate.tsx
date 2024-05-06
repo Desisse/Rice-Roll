@@ -12,8 +12,12 @@ import { CustomTextInput } from "../../../../Components/CustomTextInput";
 import useViewModel from "./ViewModel";
 import { RoundedButton } from "../../../../Components/RoundedButton";
 import { ModalPickImage } from "../../../../Components/ModalPickImage";
+import { StackScreenProps } from "@react-navigation/stack";
+import { ClientStackParamList } from "../../../../../Presentation/navigator/ClientStackNavigator";
 
-export const ClientAddressCreateScreen = () => {
+interface Props extends StackScreenProps<ClientStackParamList, 'ClientAddressCreateScreen'>{};
+
+export const ClientAddressCreateScreen = ({navigation, route}: Props) => {
   const {
     address,
     neighborhood,
@@ -21,9 +25,17 @@ export const ClientAddressCreateScreen = () => {
     loading,
     responseMessage,
     onChange,
-    createCategory,
+    createAddress,
+    onChangeRefPoint
   } = useViewModel();
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    if(route.params?.refPoint){
+      onChangeRefPoint(route.params?.refPoint, route.params.latitude, route.params?.longitude);
+    }
+    }, [route.params?.refPoint])
+  
 
   useEffect(() => {
     if (responseMessage !== "" && Platform.OS === "android") {
@@ -61,6 +73,7 @@ export const ClientAddressCreateScreen = () => {
           onChangeText={onChange}
         />
 
+        <TouchableOpacity onPress={() => navigation.navigate('ClientAddressMapScreen') }>
         <CustomTextInput
           placeholder="Punto de Referencia"
           image={require("../../../../../../assets/reference.png")}
@@ -68,13 +81,16 @@ export const ClientAddressCreateScreen = () => {
           property="refPoint"
           value={refPoint}
           onChangeText={onChange}
+          editable={false}
         />
+        </TouchableOpacity>
+
       </View>
 
       <View style={styles.buttonContainer}>
         <RoundedButton
           text="Agregar nueva dirección"
-          onPress={() => createCategory()}
+          onPress={() => createAddress()}
         />
       </View>
 

@@ -1,39 +1,54 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { CreateCategoryUseCase } from "../../../../../Domain/useCase/category/CreateCategory";
 import { CategoryContext } from "../../../../../Presentation/context/CategoryContext";
+import { CreateAddressUseCase } from "../../../../../Domain/useCase/address/CreateAddress";
+import { UserContext } from "../../../../../Presentation/context/UserContext";
 
 const ClientAddressCreateViewModel = () => {
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState<ImagePicker.ImagePickerAsset>();
   const [responseMessage, setResponseMessage] = useState("");
-  const { create } = useContext(CategoryContext);
+  const { user } = useContext(UserContext);
 
   const [values, setValues] = useState({
     address: "",
     neighborhood: "",
     refPoint: "",
+    lat: 0.0,
+    lng: 0.0,
+    id_user: "",
   });
+
+  useEffect(() => {
+    if (user.id != "") {
+      onChange("id_user", user.id);
+    }
+  }, [user]);
 
   const onChange = (property: string, value: any) => {
     setValues({ ...values, [property]: value });
   };
 
-  const createCategory = async () => {
-    // setLoading(true);
-    // const response = await create(values, file!);
-    // setLoading(false);
-    // setResponseMessage(response.message);
-    // resetForm();
+  const onChangeRefPoint = (refPoint: string, lat: number, lng: number) => {
+    setValues({ ...values, refPoint: refPoint, lat: lat, lng: lng });
   };
 
+  const createAddress = async () => {
+    setLoading(true);
+    const response = await CreateAddressUseCase(values);
+    setLoading(false);
+    setResponseMessage(response.message);
+    resetForm();
+  };
 
   const resetForm = async () => {
-    // setValues({
-    //   name: "",
-    //   description: "",
-    //   image: "",
-    // });
+    setValues({
+      address: "",
+      neighborhood: "",
+      refPoint: "",
+      lat: 0.0,
+      lng: 0.0,
+      id_user: user.id!,
+    });
   };
 
   return {
@@ -41,7 +56,8 @@ const ClientAddressCreateViewModel = () => {
     loading,
     responseMessage,
     onChange,
-    createCategory,
+    createAddress,
+    onChangeRefPoint
   };
 };
 
