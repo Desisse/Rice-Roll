@@ -2,11 +2,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import { GetByUserAddressUseCase } from '../../../../../Domain/useCase/address/GetByUserAddress';
 import { Address } from '../../../../../Domain/entities/Address';
 import { UserContext } from '../../../../../Presentation/context/UserContext';
+import { CreateOrderUseCase } from '../../../../../Domain/useCase/order/CreateOrder';
+import { Order } from '../../../../../Domain/entities/Order';
+import { ShoppingBagContext } from '../../../../../Presentation/context/ShoppingBagContext';
 
  const ClientAddressListViewModel = () => {
     const [address, setAddress] = useState<Address[]>([]);
     const { user, saveUserSession, getUserSession } = useContext(UserContext);
+    const { shoppingBag } = useContext(ShoppingBagContext);
     const [checked, setChecked] = useState('');
+    const [responseMessage, setResponseMessage] = useState('');
 
     
     useEffect(() => {
@@ -16,6 +21,16 @@ import { UserContext } from '../../../../../Presentation/context/UserContext';
         console.log('USUARIO CON DIRECCION: ' + JSON.stringify(user));
       }
     }, [user])
+
+    const createOrder = async() => {
+      const order: Order = {
+        id_client: user.id!,
+        id_address: user.address?.id!,
+        products: shoppingBag
+      }
+      const result = await CreateOrderUseCase(order);
+      setResponseMessage(result.message);
+    }
     
 
     const changeRadioValue = (address: Address) => {
@@ -32,8 +47,10 @@ import { UserContext } from '../../../../../Presentation/context/UserContext';
   return {
     address,
     checked,
+    responseMessage,
     getAddress,
-    changeRadioValue
+    changeRadioValue,
+    createOrder
   }
 }
 
