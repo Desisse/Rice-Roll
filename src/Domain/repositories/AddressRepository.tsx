@@ -4,4 +4,5 @@ import { Address } from "../entities/Address";
 export interface AddressRepository {
 
     create(address: Address): Promise<ResponseApiRice>;
+    getByUser(id_user: string): Promise<Address[]>;
 }

@@ -5,6 +5,20 @@ import { ResponseApiRice } from "../sources/remote/models/ResponseApiRice";
 import { ApiRiceRoll } from "../sources/remote/api/ApiRiceRoll";
 
 export class AddressRepositoryImpl implements AddressRepository {
+
+    async getByUser(id_user: string): Promise<Address[]> {
+        try {
+            const response = await ApiRiceRoll.get<Address[]>(`/address/findByUser/${id_user}`);
+            return Promise.resolve(response.data);
+            
+        } catch (error) {
+            let e = error as AxiosError;
+            console.log("ERROR:" + JSON.stringify(e.response?.data));
+            return Promise.resolve([]);
+        }
+        
+    }
+
     async create(address: Address): Promise<ResponseApiRice> {
         try {
             const response = await ApiRiceRoll.post<ResponseApiRice>('/address/create', address);
