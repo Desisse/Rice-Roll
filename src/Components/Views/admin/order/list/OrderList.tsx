@@ -1,10 +1,80 @@
-import React from "react";
-import { View, Text } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, useWindowDimensions, FlatList } from "react-native";
+import useViewModel from './ViewModel';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { Item } from "react-native-paper/lib/typescript/components/Drawer/Drawer";
+import { OrderListItem } from "./Item";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { AdminOrderStackParamList } from "../../../../../Presentation/navigator/AdminOrderStackNavigator";
 
-export const AdminOrderListScreen = () => {
+interface Props {
+  status: string;
+}
+
+ const OrderListScreen = ({status}: Props) => {
+
+  const { orders, getOrders} = useViewModel();
+
+  const navigation = useNavigation<StackNavigationProp<AdminOrderStackParamList, 'AdminOrderListScreen'>>();
+
+  useEffect(() => {
+    getOrders(status);
+  }, [])
+  
   return (
     <View>
-      <Text> AdminOrderListScreen </Text>
+      <FlatList
+      data={orders}
+      keyExtractor={ (item) => item.id!}
+      renderItem={({item}) => <OrderListItem order={item} navigation={navigation} />}
+      />
     </View>
   );
 };
+
+
+const renderScene = ({ route }: any) => {
+  switch (route.key) {
+    case 'first':
+      return <OrderListScreen status="PAGADO" />;
+    case 'second':
+      return <OrderListScreen status="DESPACHADO" />;
+    case 'third':
+        return <OrderListScreen status="EN CAMINO" />;
+        case 'fourth':
+          return <OrderListScreen status="ENTREGADO" />;
+    default:
+    return <OrderListScreen status="PAGADO" />;
+
+  }
+};
+
+export const AdminOrderListScreen = () => {
+  const layout = useWindowDimensions();
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: 'first', title: 'PAGADO' },
+    { key: 'second', title: 'DESPACHADO' },
+    { key: 'third', title: 'EN CAMINO' },
+    { key: 'fourth', title: 'ENTREGADO' },
+  ]);
+
+  return (
+    <TabView
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{ width: layout.width }}
+      renderTabBar={props => (
+        <TabBar
+        {...props}
+        indicatorStyle = {{backgroundColor: 'white' }}
+        scrollEnabled={true}
+        style={{backgroundColor: '#7D0A0A', height: 50, alignItems: 'center', justifyContent: 'center'}}
+        />
+      )}
+    />
+  );
+}
