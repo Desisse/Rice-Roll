@@ -1,9 +1,10 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { ResponseApiRice } from "../../Data/sources/remote/models/ResponseApiRice";
 import { Order } from "../../Domain/entities/Order";
 import { GetByStatusOrderUseCase } from "../../Domain/useCase/order/GetByStatusOrder";
 import { UpdatedToDispatchedUseCase } from "../../Domain/useCase/order/UpdatedToDispatched";
 import { GetByDeliveryAndStatusOrderUseCase } from "../../Domain/useCase/order/GetByDeliveryAndStatus";
+import { UpdatedToOnTheWayUseCase } from "../../Domain/useCase/order/UpdateToOnTheWay";
 
 export interface OrderContextProps {
     ordersPayed: Order[],
@@ -12,7 +13,9 @@ export interface OrderContextProps {
     ordersDelivery: Order[],
     getOrdersByStatus(status: string): Promise<void>,
     getOrdersByDeliveryAndStatus(id_delivery: string, status: string): Promise<void>,
-    updateToDispatched(order: Order): Promise<ResponseApiRice>
+    updateToDispatched(order: Order): Promise<ResponseApiRice>,
+    updateToOnTheWay(order: Order): Promise<ResponseApiRice>,
+    
 }
 
 export const OrderContext= createContext({} as OrderContextProps);
@@ -22,6 +25,14 @@ export const OrderProvider = ({children}: any) => {
     const [ordersDispatched, setOrdersDispatched] = useState<Order[]>([]);
     const [ordersOnTheWay, setOrdersOnTheWay] = useState<Order[]>([]);
     const [ordersDelivery, setOrdersDelivery] = useState<Order[]>([]);
+
+    useEffect(() => {
+        setOrdersPayed([]);
+        setOrdersDispatched([]);
+        setOrdersOnTheWay([]);
+        setOrdersDelivery([]);
+    }, [])
+    
 
 
 
@@ -66,6 +77,13 @@ export const OrderProvider = ({children}: any) => {
         return result;
     }
 
+    const updateToOnTheWay= async(order: Order) => {
+        const result = await UpdatedToOnTheWayUseCase(order);
+        getOrdersByDeliveryAndStatus(order.id_delivery!,'DESPACHADO');
+        getOrdersByDeliveryAndStatus(order.id_delivery!,'EN CAMINO');
+        return result;
+    }
+
     return (
         <OrderContext.Provider
         value={{
@@ -75,7 +93,8 @@ export const OrderProvider = ({children}: any) => {
             ordersDelivery,
             getOrdersByStatus,
             getOrdersByDeliveryAndStatus,
-            updateToDispatched
+            updateToDispatched,
+            updateToOnTheWay
         }}
         >
             {children}

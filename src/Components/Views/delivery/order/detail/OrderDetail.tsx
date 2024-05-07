@@ -28,11 +28,10 @@ export const DeliveryOrderDetailScreen = ({ navigation, route }: Props) => {
     items,
     responseMessage,
     getTotal,
-    getDeliveryMen,
     setOpen,
     setValue,
     setItems,
-    dispatchOrder,
+    updateToOnTheWayOrder,
   } = useViewModel(order);
 
   useEffect(() => {
@@ -45,8 +44,8 @@ export const DeliveryOrderDetailScreen = ({ navigation, route }: Props) => {
     if (total == 0.0) {
       getTotal();
     }
-    getDeliveryMen();
   }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.products}>
@@ -96,33 +95,27 @@ export const DeliveryOrderDetailScreen = ({ navigation, route }: Props) => {
           />
         </View>
 
-        {order.status === "PAGADO" ? (
-          <View>
-            <Text style={styles.delivery}>ASIGNAR REPARTIDOR</Text>
-            <View style={styles.dropDown}>
-              <DropDownPicker
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-              />
-            </View>
+          <View style={styles.infoRow}>
+          <View style={styles.infoText}>
+            <Text style={styles.dateOrder}> Repartidor Asignado</Text>
+            <Text style={styles.date}>
+              {order.delivery?.name} {order.delivery?.lastname}
+            </Text>
           </View>
-        ) : (
-          <Text style={styles.delivery}>
-            REPARTIDOR ASIGNADO: {order.delivery?.name} {order.delivery?.lastname}
-          </Text>
-        )}
+          <Image
+            style={styles.imageOrder}
+            source={require("../../../../../../assets/delivery.png")}
+          />
+        </View>
+        
 
         <View style={styles.totalInfo}>
           <Text style={styles.total}>TOTAL: ${total} </Text>
           <View style={styles.button}>
-            {order.status === "PAGADO" && (
+            {order.status === "DESPACHADO" && (
               <RoundedButton
-                text="Terminar Orden"
-                onPress={() => dispatchOrder()}
+                text="Iniciar Entrega"
+                onPress={() => updateToOnTheWayOrder()}
               />
             )}
           </View>
