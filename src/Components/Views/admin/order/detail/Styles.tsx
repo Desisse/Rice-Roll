@@ -6,12 +6,12 @@ const AdminOrderDetailStyles = StyleSheet.create({
     },
     products: {
         width: '100%',
-        height: '40%'
+        height: '45%'
 
     },
     info: {
         width: '100%',
-        height: '60%',
+        height: '55%',
         backgroundColor: 'white',
         borderTopLeftRadius: 40,
         borderTopRightRadius: 40,
@@ -50,10 +50,15 @@ const AdminOrderDetailStyles = StyleSheet.create({
     },
     total: {
         fontSize: 17,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginTop: 50
     },
     button: {
-        width: '50%'
+        width: '50%',
+        marginTop: 45
+    },
+    dropDown: {
+        marginTop: 15,
 
     }
 })
