@@ -4,6 +4,7 @@ import { TouchableOpacity, Image } from "react-native";
 import { AdminOrderListScreen } from "../../Components/Views/admin/order/list/OrderList";
 import { AdminOrderDetailScreen } from "../../Components/Views/admin/order/detail/OrderDetail";
 import { Order } from "../../Domain/entities/Order";
+import { OrderProvider } from "../context/OrderContext";
 
 export type AdminOrderStackParamList = {
     AdminOrderListScreen: undefined;
@@ -14,6 +15,7 @@ const Stack = createNativeStackNavigator<AdminOrderStackParamList>();
 
 export const AdminOrderStackNavigator = () => {
   return (
+    <OrderStatus>
     <Stack.Navigator
         screenOptions={{
           headerShown: false,
@@ -30,6 +32,15 @@ export const AdminOrderStackNavigator = () => {
           options={{ headerShown: false, title: "Detalle de la Orden" }}
         />
       </Stack.Navigator>
+    </OrderStatus>
   );
 };
+
+const OrderStatus = ({children}: any) => {
+  return (
+    <OrderProvider>
+      {children}
+    </OrderProvider>
+  )
+}
 

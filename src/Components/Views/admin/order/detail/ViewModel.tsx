@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Order } from "../../../../../Domain/entities/Order";
 import { GetDeliveryMenUserUseCase } from "../../../../../Domain/useCase/user/GetDeliveryMenUser";
 import { User } from "../../../../../Domain/entities/User";
 import { UpdatedToDispatchedUseCase } from "../../../../../Domain/useCase/order/UpdatedToDispatched";
+import { OrderContext } from "../../../../../Presentation/context/OrderContext";
 
 interface DropDownProps {
   label: string, 
@@ -16,7 +17,8 @@ export const AdminOrderDetailViewModel = (order: Order) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState<DropDownProps[]>([]);
-  const [responseMessage, setResponseMessage] = useState('')
+  const [responseMessage, setResponseMessage] = useState('');
+  const { updateToDispatched } = useContext(OrderContext);
 
   useEffect(() => {
     setDropDownItems();
@@ -26,7 +28,7 @@ export const AdminOrderDetailViewModel = (order: Order) => {
   const dispatchOrder = async() => {
     if(value !== null) {
       order.id_delivery = value!;
-      const result = await UpdatedToDispatchedUseCase(order);
+      const result = await updateToDispatched(order);
       setResponseMessage(result.message);
     } else {
       setResponseMessage('Asigna un repartidor');
