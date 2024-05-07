@@ -3,6 +3,7 @@ import { ResponseApiRice } from "../../Data/sources/remote/models/ResponseApiRic
 import { Order } from "../../Domain/entities/Order";
 import { GetByStatusOrderUseCase } from "../../Domain/useCase/order/GetByStatusOrder";
 import { UpdatedToDispatchedUseCase } from "../../Domain/useCase/order/UpdatedToDispatched";
+import { GetByDeliveryAndStatusOrderUseCase } from "../../Domain/useCase/order/GetByDeliveryAndStatus";
 
 export interface OrderContextProps {
     ordersPayed: Order[],
@@ -10,6 +11,7 @@ export interface OrderContextProps {
     ordersOnTheWay: Order[],
     ordersDelivery: Order[],
     getOrdersByStatus(status: string): Promise<void>,
+    getOrdersByDeliveryAndStatus(id_delivery: string, status: string): Promise<void>,
     updateToDispatched(order: Order): Promise<ResponseApiRice>
 }
 
@@ -40,6 +42,23 @@ export const OrderProvider = ({children}: any) => {
         }
     }
 
+
+    const getOrdersByDeliveryAndStatus = async(id_delivery: string, status: string) => {
+        const result = await GetByDeliveryAndStatusOrderUseCase(id_delivery, status);
+        if(status === 'PAGADO') {
+            setOrdersPayed(result);
+        }
+        else if(status === 'DESPACHADO') {
+            setOrdersDispatched(result);
+        }
+        else if(status === 'EN CAMINO') {
+            setOrdersOnTheWay(result);
+        }
+        else if(status === 'ENTREGADO') {
+            setOrdersDelivery(result);
+        }
+    }
+
     const updateToDispatched = async(order: Order) => {
         const result = await UpdatedToDispatchedUseCase(order);
         getOrdersByStatus('PAGADO');
@@ -55,6 +74,7 @@ export const OrderProvider = ({children}: any) => {
             ordersOnTheWay,
             ordersDelivery,
             getOrdersByStatus,
+            getOrdersByDeliveryAndStatus,
             updateToDispatched
         }}
         >

@@ -12,7 +12,7 @@ import { ProfileUpdateScreen } from "../../../src/Components/Views/profile/updat
 import { UserProvider } from "../../../src/Presentation/context/UserContext";
 import { AdminCategoryCreateScreen } from "../../../src/Components/Views/admin/category/create/CategoryCreate";
 import { AdminCategoryUpdateScreen } from "../../../src/Components/Views/admin/category/update/CategoryUpdate";
-
+import { DeliveryTabsNavigator } from "./DeliveryTabsNavigator";
 
 export type RootStackParamList = {
   HomeScreen: undefined;
@@ -20,14 +20,15 @@ export type RootStackParamList = {
   RolesScreen: undefined;
   AdminTabsNavigator: undefined;
   ClientTabsNavigator: undefined;
+  DeliveryTabsNavigator: undefined;
   ProfileUpdateScreen: { user: User };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const UserState = ({ children }: any) => {
-    return <UserProvider>{children}</UserProvider>;
-  };
+  return <UserProvider>{children}</UserProvider>;
+};
 
 export const MainStackNavigator = () => {
   return (
@@ -61,14 +62,16 @@ export const MainStackNavigator = () => {
         />
 
         <Stack.Screen
+          name="DeliveryTabsNavigator"
+          component={DeliveryTabsNavigator}
+        />
+
+        <Stack.Screen
           name="ProfileUpdateScreen"
           component={ProfileUpdateScreen}
           options={{ headerShown: true, title: "Actualizar Usuario" }}
         />
-
       </Stack.Navigator>
     </UserState>
   );
 };
-
-
