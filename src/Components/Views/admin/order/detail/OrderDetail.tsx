@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Image, Text, View } from "react-native";
+import { Image, Platform, Text, ToastAndroid, View } from "react-native";
 import styles from "./Styles";
 import { FlatList } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -19,7 +19,26 @@ interface Props
 export const AdminOrderDetailScreen = ({ navigation, route }: Props) => {
   const { order } = route.params;
 
-  const { total, deliveryMen,open, value, items, getTotal, getDeliveryMen, setOpen, setValue, setItems, dispatchOrder} = useViewModel(order);
+  const {
+    total,
+    deliveryMen,
+    open,
+    value,
+    items,
+    responseMessage,
+    getTotal,
+    getDeliveryMen,
+    setOpen,
+    setValue,
+    setItems,
+    dispatchOrder,
+  } = useViewModel(order);
+
+  useEffect(() => {
+    if (responseMessage !== "" && Platform.OS === "android") {
+      ToastAndroid.show(responseMessage, ToastAndroid.LONG);
+    }
+  }, [responseMessage]);
 
   useEffect(() => {
     if (total == 0.0) {
@@ -76,23 +95,35 @@ export const AdminOrderDetailScreen = ({ navigation, route }: Props) => {
           />
         </View>
 
-        <Text style={styles.delivery}>ASIGNAR REPARTIDOR</Text>
-
-        <View style={styles.dropDown}>
-        <DropDownPicker
-          open={open}
-          value={value}
-          items={items}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setItems}
-        />
-        </View>
+        {order.status === "PAGADO" ? (
+          <View>
+            <Text style={styles.delivery}>ASIGNAR REPARTIDOR</Text>
+            <View style={styles.dropDown}>
+              <DropDownPicker
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+              />
+            </View>
+          </View>
+        ) : (
+          <Text style={styles.delivery}>
+            REPARTIDOR ASIGNADO: {order.delivery?.name}
+          </Text>
+        )}
 
         <View style={styles.totalInfo}>
           <Text style={styles.total}>TOTAL: ${total} </Text>
           <View style={styles.button}>
-            <RoundedButton text="Terminar Orden" onPress={() => dispatchOrder()} />
+            {order.status === "PAGADO" && (
+              <RoundedButton
+                text="Terminar Orden"
+                onPress={() => dispatchOrder()}
+              />
+            )}
           </View>
         </View>
       </View>

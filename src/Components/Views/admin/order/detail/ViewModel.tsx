@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Order } from "../../../../../Domain/entities/Order";
 import { GetDeliveryMenUserUseCase } from "../../../../../Domain/useCase/user/GetDeliveryMenUser";
 import { User } from "../../../../../Domain/entities/User";
+import { UpdatedToDispatchedUseCase } from "../../../../../Domain/useCase/order/UpdatedToDispatched";
 
 interface DropDownProps {
   label: string, 
@@ -15,13 +16,21 @@ export const AdminOrderDetailViewModel = (order: Order) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState<DropDownProps[]>([]);
+  const [responseMessage, setResponseMessage] = useState('')
 
   useEffect(() => {
     setDropDownItems();
   }, [deliveryMen])
 
 
-  const dispatchOrder = () => {
+  const dispatchOrder = async() => {
+    if(value !== null) {
+      order.id_delivery = value!;
+      const result = await UpdatedToDispatchedUseCase(order);
+      setResponseMessage(result.message);
+    } else {
+      setResponseMessage('Asigna un repartidor');
+    }
     console.log('REPARTIDOR ASIGNADO: ' + value);
     
   }
@@ -56,6 +65,7 @@ export const AdminOrderDetailViewModel = (order: Order) => {
     open,
     value,
     items,
+    responseMessage,
     getTotal,
     getDeliveryMen,
     setOpen,
