@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 //@ts-ignore
 import stripe from 'react-native-stripe-client';
-
+import { CreatePaymentStripeUseCase } from '../../../../../Domain/useCase/stripe/CreatePaymentStripe';
+import { ShoppingBagContext } from '../../../../../Presentation/context/ShoppingBagContext';
+import { UserContext } from '../../../../../Presentation/context/UserContext';
 
 
 const ClientPaymentFormViewModel = () => {
@@ -16,6 +18,9 @@ const ClientPaymentFormViewModel = () => {
   })
 
   const stripeClient = stripe("pk_test_51PE3bSInS1vZxoNDViFqR5WwByn11jxA9hwZ5c52JfX5rweoK3AeYntlauOXP3FbuB53Rn7RvBqaDAXwPjsUwkrs00nSjI1lza");
+
+  const {total, shoppingBag} = useContext(ShoppingBagContext); 
+  const { user} = useContext(UserContext);
 
 
   useEffect(() => {
@@ -37,6 +42,18 @@ const ClientPaymentFormViewModel = () => {
     });
 
     console.log('RESPUESTA STRIPE: ' + JSON.stringify(response, null, 3));
+
+    if(response.id !== undefined &&  response.id !== null) {
+      const result = await CreatePaymentStripeUseCase(response.id, total, {
+        id_client: user.id!,
+        id_address: user.address?.id!,
+        products: shoppingBag
+
+      })
+
+      console.log('RESPONSE: ' + JSON.stringify(result, null, 3));
+      
+    }
     
   }
   
