@@ -6,6 +6,7 @@ import { UpdatedToDispatchedUseCase } from "../../Domain/useCase/order/UpdatedTo
 import { GetByDeliveryAndStatusOrderUseCase } from "../../Domain/useCase/order/GetByDeliveryAndStatus";
 import { UpdatedToOnTheWayUseCase } from "../../Domain/useCase/order/UpdateToOnTheWay";
 import { UpdatedToDeliveredUseCase } from "../../Domain/useCase/order/UpdatedToDelivered";
+import { GetByClientAndStatusOrderUseCase } from "../../Domain/useCase/order/GetByClientAndStatus";
 
 export interface OrderContextProps {
     ordersPayed: Order[],
@@ -14,6 +15,7 @@ export interface OrderContextProps {
     ordersDelivery: Order[],
     getOrdersByStatus(status: string): Promise<void>,
     getOrdersByDeliveryAndStatus(id_delivery: string, status: string): Promise<void>,
+    getOrdersByClientAndStatus(id_client: string, status: string): Promise<void>,
     updateToDispatched(order: Order): Promise<ResponseApiRice>,
     updateToOnTheWay(order: Order): Promise<ResponseApiRice>,
     updateToDelivered(order: Order): Promise<ResponseApiRice>,
@@ -71,6 +73,22 @@ export const OrderProvider = ({children}: any) => {
         }
     }
 
+    const getOrdersByClientAndStatus = async(id_client: string, status: string) => {
+        const result = await GetByClientAndStatusOrderUseCase(id_client, status);
+        if(status === 'PAGADO') {
+            setOrdersPayed(result);
+        }
+        else if(status === 'DESPACHADO') {
+            setOrdersDispatched(result);
+        }
+        else if(status === 'EN CAMINO') {
+            setOrdersOnTheWay(result);
+        }
+        else if(status === 'ENTREGADO') {
+            setOrdersDelivery(result);
+        }
+    }
+
     const updateToDispatched = async(order: Order) => {
         const result = await UpdatedToDispatchedUseCase(order);
         getOrdersByStatus('PAGADO');
@@ -101,6 +119,7 @@ export const OrderProvider = ({children}: any) => {
             ordersDelivery,
             getOrdersByStatus,
             getOrdersByDeliveryAndStatus,
+            getOrdersByClientAndStatus,
             updateToDispatched,
             updateToOnTheWay,
             updateToDelivered

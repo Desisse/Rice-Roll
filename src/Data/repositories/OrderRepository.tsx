@@ -32,6 +32,18 @@ export class OrderRepositoryImpl implements OrderRepository {
     }
   }
 
+  async getByClientAndStatus(id_client: string, status: string): Promise<Order[]> {
+    try {
+      const response = await ApiRiceRoll.get<Order[]>(`/orders/findByClientAndStatus/${id_client}/${status}`)
+      return Promise.resolve(response.data);
+      
+    } catch (error) {
+      let e = error as AxiosError;
+      console.log("ERROR:" + JSON.stringify(e.response?.data));
+      return Promise.resolve([]);
+    }
+  }
+
   async create(order: Order): Promise<ResponseApiRice> {
     try {
         const response = await ApiRiceRoll.post<ResponseApiRice>('/orders/create', order);
