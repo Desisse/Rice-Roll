@@ -7,10 +7,12 @@ import { Order } from "../../Domain/entities/Order";
 import { OrderProvider } from "../context/OrderContext";
 import { DeliveryOrderListScreen } from "../../Components/Views/delivery/order/list/OrderList";
 import { DeliveryOrderDetailScreen } from "../../Components/Views/delivery/order/detail/OrderDetail";
+import { DeliveryOrderMapScreen } from "../../Components/Views/delivery/order/map/OrderMap";
 
 export type DeliveryOrderStackParamList = {
-    DeliveryOrderListScreen: undefined;
-    DeliveryOrderDetailScreen: {order: Order}
+  DeliveryOrderListScreen: undefined;
+  DeliveryOrderDetailScreen: { order: Order };
+  DeliveryOrderMapScreen: { order: Order };
 };
 
 const Stack = createNativeStackNavigator<DeliveryOrderStackParamList>();
@@ -18,7 +20,7 @@ const Stack = createNativeStackNavigator<DeliveryOrderStackParamList>();
 export const DeliveryOrderStackNavigator = () => {
   return (
     <OrderStatus>
-    <Stack.Navigator
+      <Stack.Navigator
         screenOptions={{
           headerShown: false,
         }}
@@ -33,16 +35,16 @@ export const DeliveryOrderStackNavigator = () => {
           component={DeliveryOrderDetailScreen}
           options={{ headerShown: false, title: "Detalle de la Orden" }}
         />
+
+        <Stack.Screen
+          name="DeliveryOrderMapScreen"
+          component={DeliveryOrderMapScreen}
+        />
       </Stack.Navigator>
     </OrderStatus>
   );
 };
 
-const OrderStatus = ({children}: any) => {
-  return (
-    <OrderProvider>
-      {children}
-    </OrderProvider>
-  )
-}
-
+const OrderStatus = ({ children }: any) => {
+  return <OrderProvider>{children}</OrderProvider>;
+};

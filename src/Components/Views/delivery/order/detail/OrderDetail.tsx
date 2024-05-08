@@ -118,6 +118,12 @@ export const DeliveryOrderDetailScreen = ({ navigation, route }: Props) => {
                 onPress={() => updateToOnTheWayOrder()}
               />
             )}
+            {order.status === "EN CAMINO" && (
+              <RoundedButton
+                text="Ir a la ruta"
+                onPress={() => navigation.navigate('DeliveryOrderMapScreen', {order: order})}
+              />
+            )}
           </View>
         </View>
       </View>
