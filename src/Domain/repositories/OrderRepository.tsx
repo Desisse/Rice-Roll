@@ -7,6 +7,7 @@ export interface OrderRepository {
     getByDeliveryAndStatus(id_delivery: string, status: string): Promise<Order[]>;
     updateToDispatched(order: Order): Promise<ResponseApiRice>;
     updateToOnTheWay(order: Order): Promise<ResponseApiRice>;
+    updateToDelivered(order: Order): Promise<ResponseApiRice>;
 
 
 }

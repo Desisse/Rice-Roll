@@ -28,13 +28,11 @@ export const DeliveryOrderMapScreen = ({ navigation, route }: Props) => {
     messagePermissions,
     position,
     mapRef,
-    name,
-    latitude,
-    longitude,
     origin,
     destination,
-    onRegionChangeComplete,
+    responseMessage,
     stopForegroundUpdate,
+    updateToDeliveredOrder
   } = useViewModel(order);
 
   useEffect(() => {
@@ -50,10 +48,17 @@ export const DeliveryOrderMapScreen = ({ navigation, route }: Props) => {
     return unsuscribe;
   }, [navigation]);
 
+  useEffect(() => {
+    if (responseMessage !== "" && Platform.OS === "android") {
+      ToastAndroid.show(responseMessage, ToastAndroid.LONG);
+    }
+  }, [responseMessage]);
+
   return (
     <View style={styles.container}>
       <MapView
         ref={mapRef}
+        zoomControlEnabled={true}
         style={{ height: "64%", width: "100%", position: "absolute", top: 0 }}
         provider={PROVIDER_GOOGLE}
       >
@@ -128,7 +133,7 @@ export const DeliveryOrderMapScreen = ({ navigation, route }: Props) => {
         </View>
 
         <View style={styles.buttonRefPoint}>
-          <RoundedButton text="Entregar Pedido" onPress={() => {}} />
+          <RoundedButton text="Entregar Pedido" onPress={() => updateToDeliveredOrder()} />
         </View>
       </View>
 

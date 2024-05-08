@@ -5,6 +5,7 @@ import { GetByStatusOrderUseCase } from "../../Domain/useCase/order/GetByStatusO
 import { UpdatedToDispatchedUseCase } from "../../Domain/useCase/order/UpdatedToDispatched";
 import { GetByDeliveryAndStatusOrderUseCase } from "../../Domain/useCase/order/GetByDeliveryAndStatus";
 import { UpdatedToOnTheWayUseCase } from "../../Domain/useCase/order/UpdateToOnTheWay";
+import { UpdatedToDeliveredUseCase } from "../../Domain/useCase/order/UpdatedToDelivered";
 
 export interface OrderContextProps {
     ordersPayed: Order[],
@@ -15,7 +16,7 @@ export interface OrderContextProps {
     getOrdersByDeliveryAndStatus(id_delivery: string, status: string): Promise<void>,
     updateToDispatched(order: Order): Promise<ResponseApiRice>,
     updateToOnTheWay(order: Order): Promise<ResponseApiRice>,
-    
+    updateToDelivered(order: Order): Promise<ResponseApiRice>,
 }
 
 export const OrderContext= createContext({} as OrderContextProps);
@@ -84,6 +85,13 @@ export const OrderProvider = ({children}: any) => {
         return result;
     }
 
+    const updateToDelivered= async(order: Order) => {
+        const result = await UpdatedToDeliveredUseCase(order);
+        getOrdersByDeliveryAndStatus(order.id_delivery!,'EN CAMINO');
+        getOrdersByDeliveryAndStatus(order.id_delivery!,'ENTREGADO');
+        return result;
+    }
+
     return (
         <OrderContext.Provider
         value={{
@@ -94,7 +102,8 @@ export const OrderProvider = ({children}: any) => {
             getOrdersByStatus,
             getOrdersByDeliveryAndStatus,
             updateToDispatched,
-            updateToOnTheWay
+            updateToOnTheWay,
+            updateToDelivered
         }}
         >
             {children}

@@ -70,5 +70,18 @@ export class OrderRepositoryImpl implements OrderRepository {
     
   }
 
+  async updateToDelivered(order: Order): Promise<ResponseApiRice> {
+    try {
+      const response = await ApiRiceRoll.put<ResponseApiRice>('/orders/updateToDelivered', order);
+      return Promise.resolve(response.data);
+  } catch (error) {
+    let e = error as AxiosError;
+    console.log("ERROR:" + JSON.stringify(e.response?.data));
+    const apiError: ResponseApiRice = JSON.parse(JSON.stringify(e.response?.data));
+    return Promise.resolve(apiError);
+  }
+    
+  }
+
 
 }

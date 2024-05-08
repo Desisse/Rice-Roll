@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 import MapView, { Camera } from "react-native-maps";
 import { Order } from "../../../../../Domain/entities/Order";
+import { OrderContext } from "../../../../../Presentation/context/OrderContext";
 
 const DeliveryOrderMapViewModel = (order: Order) => {
   const [messagePermissions, setMessagePermissions] = useState("");
+  const [responseMessage, setResponseMessage] = useState('');
   const [refPoint, setRefPoint] = useState({
     name: "",
     latitude: 0.0,
@@ -22,6 +24,8 @@ const DeliveryOrderMapViewModel = (order: Order) => {
   const mapRef = useRef<MapView | null>(null);
   let positionSuscription: Location.LocationSubscription;
 
+  const { updateToDelivered } = useContext(OrderContext)
+
   useEffect(() => {
     const requestPermissions = async () => {
       const foreground = await Location.requestForegroundPermissionsAsync();
@@ -32,6 +36,12 @@ const DeliveryOrderMapViewModel = (order: Order) => {
     };
     requestPermissions();
   }, []);
+
+  const updateToDeliveredOrder = async() => {
+    const result = await updateToDelivered(order);
+    setResponseMessage(result.message);
+
+  }
 
   const onRegionChangeComplete = async (
     latitude: number,
@@ -117,8 +127,10 @@ const DeliveryOrderMapViewModel = (order: Order) => {
     ...refPoint,
     origin,
     destination,
+    responseMessage,
     onRegionChangeComplete,
-    stopForegroundUpdate
+    stopForegroundUpdate, 
+    updateToDeliveredOrder
   };
 };
 
