@@ -1,11 +1,20 @@
 import React, { useEffect } from "react";
-import { Image, Platform, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Platform,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import styles from "./Styles";
 import useViewModel from "./ViewModel";
 import { RoundedButton } from "../../../../Components/RoundedButton";
 import { StackScreenProps } from "@react-navigation/stack";
 import { DeliveryOrderStackParamList } from "../../../../../Presentation/navigator/DeliveryOrderStackNavigator";
+import MapViewDirections from "react-native-maps-directions";
+import { GOOGLE_MAPS_APIKEY } from "../../../../../Presentation/constants/GoogleMapApiKey";
 
 interface Props
   extends StackScreenProps<
@@ -22,9 +31,11 @@ export const DeliveryOrderMapScreen = ({ navigation, route }: Props) => {
     name,
     latitude,
     longitude,
+    origin,
+    destination,
     onRegionChangeComplete,
-    stopForegroundUpdate
-  } = useViewModel();
+    stopForegroundUpdate,
+  } = useViewModel(order);
 
   useEffect(() => {
     if (messagePermissions !== "" && Platform.OS === "android") {
@@ -33,12 +44,11 @@ export const DeliveryOrderMapScreen = ({ navigation, route }: Props) => {
   }, [messagePermissions]);
 
   useEffect(() => {
-    const unsuscribe = navigation.addListener('beforeRemove', () => {
+    const unsuscribe = navigation.addListener("beforeRemove", () => {
       stopForegroundUpdate();
-    })
+    });
     return unsuscribe;
-  }, [navigation])
-  
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -48,16 +58,34 @@ export const DeliveryOrderMapScreen = ({ navigation, route }: Props) => {
         provider={PROVIDER_GOOGLE}
       >
         {position !== undefined && (
-          <Marker
-            coordinate={position}
-          >
+          <Marker coordinate={position}>
             <Image
-            style={styles.markerImage}
-            source={require("../../../../../../assets/motorcycle.png")}
-          />
-
+              style={styles.markerImage}
+              source={require("../../../../../../assets/motorcycle.png")}
+            />
           </Marker>
         )}
+        {order.address !== undefined && (
+          <Marker coordinate={{latitude: order.address.lat, longitude: order.address.lng}}>
+            <Image
+              style={styles.markerImage}
+              source={require("../../../../../../assets/home.png")}
+            />
+          </Marker>
+        )}
+
+        {
+          origin.latitude != 0.0 &&
+
+          <MapViewDirections
+            origin={origin}
+            destination={destination}
+            apikey={GOOGLE_MAPS_APIKEY}
+            strokeWidth={3}
+            strokeColor="red"
+          />
+
+        }
       </MapView>
 
       <View style={styles.info}>
@@ -104,11 +132,13 @@ export const DeliveryOrderMapScreen = ({ navigation, route }: Props) => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.backContainer} onPress={() => navigation.goBack()}>
-
-        <Image 
-        style={styles.imageBack}
-        source={require('../../../../../../assets/back2.png')}
+      <TouchableOpacity
+        style={styles.backContainer}
+        onPress={() => navigation.goBack()}
+      >
+        <Image
+          style={styles.imageBack}
+          source={require("../../../../../../assets/back2.png")}
         />
       </TouchableOpacity>
     </View>

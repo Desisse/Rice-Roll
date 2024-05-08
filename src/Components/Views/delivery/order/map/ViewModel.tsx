@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 import MapView, { Camera } from "react-native-maps";
+import { Order } from "../../../../../Domain/entities/Order";
 
-const DeliveryOrderMapViewModel = () => {
+const DeliveryOrderMapViewModel = (order: Order) => {
   const [messagePermissions, setMessagePermissions] = useState("");
   const [refPoint, setRefPoint] = useState({
     name: "",
@@ -10,6 +11,14 @@ const DeliveryOrderMapViewModel = () => {
     longitude: 0.0,
   });
   const [position, setPosition] = useState<Location.LocationObjectCoords>();
+  const [origin, setOrigin] = useState({
+    latitude: 0.0,
+    longitude: 0.0
+  });
+  const [destination, setDestination] = useState({
+    latitude: order.address?.lat!,
+    longitude: order.address?.lng!
+  })
   const mapRef = useRef<MapView | null>(null);
   let positionSuscription: Location.LocationSubscription;
 
@@ -63,6 +72,10 @@ const DeliveryOrderMapViewModel = () => {
 
     const location = await Location.getLastKnownPositionAsync();
     setPosition(location?.coords);
+    setOrigin({
+      latitude: location?.coords.latitude!,
+      longitude: location?.coords.longitude!
+    })
     const newCamera: Camera = {
       center: {
         latitude: location?.coords.latitude!,
@@ -83,7 +96,7 @@ const DeliveryOrderMapViewModel = () => {
         accuracy: Location.Accuracy.BestForNavigation,
       },
       (location) => {
-        console.log('POSICION: ' + JSON.stringify(location.coords, null, 3));
+        // console.log('POSICION: ' + JSON.stringify(location.coords, null, 3));
         
         setPosition(location?.coords);
       }
@@ -102,6 +115,8 @@ const DeliveryOrderMapViewModel = () => {
     position,
     mapRef,
     ...refPoint,
+    origin,
+    destination,
     onRegionChangeComplete,
     stopForegroundUpdate
   };
