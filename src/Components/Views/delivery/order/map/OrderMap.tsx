@@ -31,6 +31,7 @@ export const DeliveryOrderMapScreen = ({ navigation, route }: Props) => {
     origin,
     destination,
     responseMessage,
+    socket,
     stopForegroundUpdate,
     updateToDeliveredOrder
   } = useViewModel(order);
@@ -44,6 +45,7 @@ export const DeliveryOrderMapScreen = ({ navigation, route }: Props) => {
   useEffect(() => {
     const unsuscribe = navigation.addListener("beforeRemove", () => {
       stopForegroundUpdate();
+      socket.disconnect();
     });
     return unsuscribe;
   }, [navigation]);

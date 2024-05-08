@@ -3,6 +3,7 @@ import * as Location from "expo-location";
 import MapView, { Camera } from "react-native-maps";
 import { Order } from "../../../../../Domain/entities/Order";
 import { OrderContext } from "../../../../../Presentation/context/OrderContext";
+import socket from "../../../../../Presentation/utils/SocketIO";
 
 const ClientOrderMapViewModel = (order: Order) => {
   const [messagePermissions, setMessagePermissions] = useState("");
@@ -12,7 +13,10 @@ const ClientOrderMapViewModel = (order: Order) => {
     latitude: 0.0,
     longitude: 0.0,
   });
-  const [position, setPosition] = useState<Location.LocationObjectCoords>();
+  const [position, setPosition] = useState({
+    latitude: 0.0,
+    longitude: 0.0
+  });
   const [origin, setOrigin] = useState({
     latitude: 0.0,
     longitude: 0.0
@@ -27,6 +31,14 @@ const ClientOrderMapViewModel = (order: Order) => {
   const { updateToDelivered } = useContext(OrderContext)
 
   useEffect(() => {
+    socket.connect();
+    socket.on('connect', () => {
+      console.log('---- SOCKET IO CONECTADO ----');
+    });
+    socket.on(`position/${order.id!}`, (data) => {
+      setPosition({latitude: data.lat, longitude: data.lng});
+
+    })
     const requestPermissions = async () => {
       const foreground = await Location.requestForegroundPermissionsAsync();
 
@@ -37,41 +49,6 @@ const ClientOrderMapViewModel = (order: Order) => {
     requestPermissions();
   }, []);
 
-  const updateToDeliveredOrder = async() => {
-    const result = await updateToDelivered(order);
-    setResponseMessage(result.message);
-
-  }
-
-  const onRegionChangeComplete = async (
-    latitude: number,
-    longitude: number
-  ) => {
-    try {
-      const place = await Location.reverseGeocodeAsync({
-        latitude: latitude,
-        longitude: longitude,
-      });
-
-      let city;
-      let street;
-      let streetNumber;
-
-      place.find((p) => {
-        city = p.city;
-        street = p.street;
-        streetNumber = p.streetNumber;
-        setRefPoint({
-          name: `${street}, ${streetNumber}, ${city}`,
-          latitude: latitude,
-          longitude: longitude,
-        });
-      });
-    } catch (error) {
-      console.log("ERROR: " + error);
-    }
-  };
-
   const startForegroundUpdate = async () => {
     const { granted } = await Location.getForegroundPermissionsAsync();
 
@@ -81,7 +58,6 @@ const ClientOrderMapViewModel = (order: Order) => {
     }
 
     const location = await Location.getLastKnownPositionAsync();
-    setPosition(location?.coords);
     setOrigin({
       latitude: location?.coords.latitude!,
       longitude: location?.coords.longitude!
@@ -98,25 +74,7 @@ const ClientOrderMapViewModel = (order: Order) => {
     };
 
     mapRef.current?.animateCamera(newCamera, { duration: 2000 });
-
-    positionSuscription?.remove();
-
-    positionSuscription = await Location.watchPositionAsync(
-      {
-        accuracy: Location.Accuracy.BestForNavigation,
-      },
-      (location) => {
-        // console.log('POSICION: ' + JSON.stringify(location.coords, null, 3));
-        
-        setPosition(location?.coords);
-      }
-    );
   };
-
-  const stopForegroundUpdate = () => {
-    positionSuscription.remove();
-    setPosition(undefined);
-  }
 
   
 
@@ -128,9 +86,7 @@ const ClientOrderMapViewModel = (order: Order) => {
     origin,
     destination,
     responseMessage,
-    onRegionChangeComplete,
-    stopForegroundUpdate, 
-    updateToDeliveredOrder
+    socket
   };
 };
 

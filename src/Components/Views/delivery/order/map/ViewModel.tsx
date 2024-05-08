@@ -3,6 +3,7 @@ import * as Location from "expo-location";
 import MapView, { Camera } from "react-native-maps";
 import { Order } from "../../../../../Domain/entities/Order";
 import { OrderContext } from "../../../../../Presentation/context/OrderContext";
+import socket from '../../../../../Presentation/utils/SocketIO';
 
 const DeliveryOrderMapViewModel = (order: Order) => {
   const [messagePermissions, setMessagePermissions] = useState("");
@@ -26,7 +27,17 @@ const DeliveryOrderMapViewModel = (order: Order) => {
 
   const { updateToDelivered } = useContext(OrderContext)
 
+  
+
   useEffect(() => {
+
+    //Llamdo socket
+    socket.connect();
+    socket.on('connect', () => {
+      console.log('---- SOCKET IO CONECTADO ----');
+      
+    })
+
     const requestPermissions = async () => {
       const foreground = await Location.requestForegroundPermissionsAsync();
 
@@ -103,12 +114,28 @@ const DeliveryOrderMapViewModel = (order: Order) => {
 
     positionSuscription = await Location.watchPositionAsync(
       {
-        accuracy: Location.Accuracy.BestForNavigation,
+        accuracy: Location.Accuracy.Balanced,
       },
       (location) => {
         // console.log('POSICION: ' + JSON.stringify(location.coords, null, 3));
-        
+        socket.emit('position', {
+          id_order: order.id,
+          lat: location.coords.latitude,
+          lng: location.coords.longitude
+        })
         setPosition(location?.coords);
+        const newCamera: Camera = {
+          center: {
+            latitude: location?.coords.latitude!,
+            longitude: location?.coords.longitude!,
+          },
+          zoom: 15,
+          heading: 0,
+          pitch: 0,
+          altitude: 0,
+        };
+        mapRef.current?.animateCamera(newCamera, { duration: 2000 });
+
       }
     );
   };
@@ -128,6 +155,7 @@ const DeliveryOrderMapViewModel = (order: Order) => {
     origin,
     destination,
     responseMessage,
+    socket,
     onRegionChangeComplete,
     stopForegroundUpdate, 
     updateToDeliveredOrder

@@ -32,8 +32,7 @@ export const ClientOrderMapScreen = ({ navigation, route }: Props) => {
     origin,
     destination,
     responseMessage,
-    stopForegroundUpdate,
-    updateToDeliveredOrder
+    socket
   } = useViewModel(order);
 
   useEffect(() => {
@@ -44,7 +43,7 @@ export const ClientOrderMapScreen = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     const unsuscribe = navigation.addListener("beforeRemove", () => {
-      stopForegroundUpdate();
+      socket.disconnect();
     });
     return unsuscribe;
   }, [navigation]);
@@ -63,7 +62,7 @@ export const ClientOrderMapScreen = ({ navigation, route }: Props) => {
         style={{ height: "64%", width: "100%", position: "absolute", top: 0 }}
         provider={PROVIDER_GOOGLE}
       >
-        {position !== undefined && (
+        {position.latitude !== 0.0 && (
           <Marker coordinate={position}>
             <Image
               style={styles.markerImage}
@@ -122,10 +121,10 @@ export const ClientOrderMapScreen = ({ navigation, route }: Props) => {
         <View style={styles.infoClient}>
           <Image
             style={styles.imageUser}
-            source={{ uri: order.client?.image }}
+            source={{ uri: order.delivery?.image }}
           />
           <Text style={styles.nameClient}>
-            {order.client?.name} {order.client?.lastname}
+            {order.delivery?.name} {order.delivery?.lastname}
           </Text>
           <Image
             style={styles.imagePhone}
@@ -133,9 +132,6 @@ export const ClientOrderMapScreen = ({ navigation, route }: Props) => {
           />
         </View>
 
-        <View style={styles.buttonRefPoint}>
-          <RoundedButton text="Entregar Pedido" onPress={() => updateToDeliveredOrder()} />
-        </View>
       </View>
 
       <TouchableOpacity
